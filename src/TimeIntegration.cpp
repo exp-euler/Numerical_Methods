@@ -1,4 +1,5 @@
 #include "TimeIntegration.hpp"
+#include <functional>
 #include <vector>
 #include <cmath>
 
@@ -14,26 +15,29 @@
 // For the algorithm used inside the for loop, please see the Wiki page
 // specified in the README file.
 void TimeIntegration::Solve(const ClassicalRK &tableau,
-             double (*F)(double, double), double h, double y0, double t0,
-             double t1, int N)
+             std::function<double(double, double)>F, double h, double y0,
+             double t0, double t1, int N)
 {
+    Y.reserve(N);
+    T.reserve(N);
+
     double y = y0;
     double t = t0;
 
     for(int i=0; i<N; i++)
     {
         std::vector<double> k{F(t,y)};
-        for(unsigned int j=0; j<tableau.a.size(); j++)
+        for(std::size_t j=0; j<tableau.a.size(); j++)
         {
             double temp = 0;
-            for(unsigned int m=0; m<tableau.a[j].size(); m++)
+            for(std::size_t m=0; m<tableau.a[j].size(); m++)
             {
                 temp += tableau.a[j][m]*k[m];
             }
             k.push_back(F(t+tableau.c[j]*h, y + temp*h));
         }
 
-        for(unsigned int j=0; j<tableau.b.size(); j++)
+        for(std::size_t j=0; j<tableau.b.size(); j++)
         {
             y += tableau.b[j]*h*k[j];
         }

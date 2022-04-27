@@ -1,7 +1,6 @@
-#include <vector>
-#include <iostream>
 #include "TimeIntegration.hpp"
 #include "Tableaus.hpp"
+#include <vector>
 
 // Demonstration of specifying a Runge-Kutta method to solve an equation like:
 //
@@ -16,7 +15,7 @@ double RHS(double t, double y)
 int main()
 {
     TimeIntegration equation;
-    equation.Solve(RK4, RHS, (0.0+1.0)/100, 2.0, 0, 1, 100);
+    equation.Solve(ClassicalRK::Euler(), &RHS, (0.0+1.0)/100, 2.0, 0, 1, 100);
     const std::vector<double> &sol = equation.getY();
 
     return 0;

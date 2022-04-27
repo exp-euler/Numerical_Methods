@@ -7,9 +7,13 @@
 // Load the c_i (steps), a_ij (weights) and b_i (final weights).
 class ClassicalRK
 {
-    // All mthods are public for ease of working.
+    // All class methods are public for ease of working.
     // Always pass a Tableau Object by const reference to avoid editing tableaus.
     public:
+    // Add more RK methods as named constructors like below
+    static ClassicalRK Euler();
+    static ClassicalRK RK4();
+
     std::vector<double> c;
     std::vector<std::vector<double>> a;
     std::vector<double> b;
@@ -18,9 +22,5 @@ class ClassicalRK
                 std::vector<std::vector<double>> weights,
                 std::vector<double> weightsHigher);
 };
-
-// Declare (only!) the methods tableaus below before defining them in Tableaus.cpp
-extern ClassicalRK Euler;
-extern ClassicalRK RK4;
 
 #endif //TABLEAUS
