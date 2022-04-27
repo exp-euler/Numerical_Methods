@@ -18,11 +18,11 @@ user@user:~/Numerical_Methods$ cd build
 ```
 and then run cmake like below:
 ```sh
-user@user:~/Numerical_Methods/build cmake ../
-user@user:~/Numerical_Methods/build make -j
+user@user:~/Numerical_Methods/build$ cmake ../
+user@user:~/Numerical_Methods/build$ make -j
 ```
 You should have successfully created the **`main`** file, which you can run in the
 terminal to see the results:
 ```sh
-user@user:~/Numerical_Methods/build ./main
+user@user:~/Numerical_Methods/build$ ./main
 ```
