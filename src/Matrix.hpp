@@ -23,10 +23,11 @@ class Matrix
         //Matrix operator-() const;
         //Matrix operator+(const Matrix& M1) const;
         //Matrix operator-(const Matrix& M1) const;
+        double& operator()(int i, int j);
         // multiplication
         //Matrix operator*(double a) const;
         //Matrix operator*(Matrix& M1) const;
-        Matrix operator*(Vector& v1) const;
+        Vector operator*(Vector& v1) const;
 };
 
 #endif

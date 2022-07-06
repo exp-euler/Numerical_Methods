@@ -25,3 +25,20 @@ int Vector::Size() const
 {
     return mSize;
 }
+
+double& Vector::operator[](int i)
+{
+    assert(i > -1);
+    assert(i < mSize);
+    return mData[i];
+}
+
+std::ostream& operator<<(std::ostream& output, Vector& v)
+{
+    output << std::endl;
+    for(int i=0; i<v.Size(); i++)
+    {
+        std::cout << v[i] << std::endl;
+    }
+    return output; // return std::ostream so that we can have chain call of <<
+}
