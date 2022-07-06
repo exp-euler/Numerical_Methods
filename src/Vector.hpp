@@ -15,6 +15,7 @@ class Vector
         //~Vector();
         int Size() const;
         double& operator[](int i);
+        Vector& operator=(const Vector& otherVector);
         friend std::ostream& operator<<(std::ostream& output, Vector& v);
 };
 

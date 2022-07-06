@@ -33,6 +33,16 @@ double& Vector::operator[](int i)
     return mData[i];
 }
 
+Vector& Vector::operator=(const Vector &otherVector)
+{
+    assert(mSize == otherVector.mSize);
+    for(int i=0; i<mSize; i++)
+    {
+        mData[i] = otherVector.mData[i];
+    }
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& output, Vector& v)
 {
     output << std::endl;

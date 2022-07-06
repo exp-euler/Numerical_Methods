@@ -24,6 +24,7 @@ class Matrix
         //Matrix operator+(const Matrix& M1) const;
         //Matrix operator-(const Matrix& M1) const;
         double& operator()(int i, int j);
+        friend std::ostream& operator<<(std::ostream& output, Matrix& M);
         // multiplication
         //Matrix operator*(double a) const;
         //Matrix operator*(Matrix& M1) const;

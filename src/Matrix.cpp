@@ -51,6 +51,20 @@ double& Matrix::operator()(int i, int j)
     return mData[i][j];
 }
 
+std::ostream& operator<<(std::ostream& output, Matrix& M)
+{
+    output << std::endl;
+    for(int i=0; i<M.NumRows(); i++)
+    {
+        for(int j=0; j<M.NumCols();j++)
+        {
+            std::cout << M(i,j) << " ";
+        }
+        std::cout << std::endl;
+    }
+    return output; // return std::ostream so that we can have chain call of <<
+}
+
 Vector Matrix::operator*(Vector &v1) const
 {
     assert(mNumCols == v1.Size());
