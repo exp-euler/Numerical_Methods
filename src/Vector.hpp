@@ -14,6 +14,7 @@ class Vector
         Vector(int size);
         //~Vector();
         int Size() const;
+        double& front();
         double& operator[](int i);
         Vector& operator=(const Vector& otherVector);
         friend std::ostream& operator<<(std::ostream& output, Vector& v);

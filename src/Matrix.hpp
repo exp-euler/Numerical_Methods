@@ -9,13 +9,15 @@ class Matrix
     private:
         int mNumRows;
         int mNumCols;
-        std::vector<std::vector<double>> mData;
+        std::vector<double> mData;
     public:
         Matrix(const Matrix& otherMatrix);
         Matrix(int m, int n);
         //~Matrix();
         int NumRows() const;
         int NumCols() const;
+        double& front();
+        Vector SerialMV(Vector& V);
         //double& operator()(int i, int j);
         //Matrix& operator=(const Matrix& otherMatrix);
         // assignment

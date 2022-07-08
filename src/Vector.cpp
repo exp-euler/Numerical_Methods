@@ -12,18 +12,20 @@ Vector::Vector(const Vector& otherVector)
 // Constructor for Vector of a given size
 Vector::Vector(int size)
 {
-    assert(size > 0);
+    assert(size >= 0);
     mSize = size;
-    mData.reserve(size);
-    for(int i=0; i<mSize; i++)
-    {
-        mData[i] = 0.0;
-    }
+
+    mData.resize(size);
 }
 
 int Vector::Size() const
 {
     return mSize;
+}
+
+double& Vector::front()
+{
+    return mData.front();
 }
 
 double& Vector::operator[](int i)
