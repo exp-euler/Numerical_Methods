@@ -12,7 +12,7 @@ Vector::Vector(const Vector& otherVector)
 // Constructor for Vector of a given size
 Vector::Vector(int size)
 {
-    assert(size >= 0);
+    assert(size > 0);
     mSize = size;
 
     mData.resize(size);

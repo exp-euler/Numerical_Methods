@@ -17,8 +17,8 @@ Matrix::Matrix(const Matrix& otherMatrix)
 // Constructor for Matrix of a given size
 Matrix::Matrix(int m, int n)
 {
-    assert(m>=0);
-    assert(n>=0);
+    assert(m>0);
+    assert(n>0);
     mNumRows = m;
     mNumCols = n;
 
