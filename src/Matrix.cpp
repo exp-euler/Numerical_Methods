@@ -72,7 +72,7 @@ Vector Matrix::SerialMV(Vector &V)
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
 
     assert(mNumCols == V.Size());
-    Vector W(mNumCols);
+    Vector W(mNumRows);
     double temp;
 
     if(ProcRank == 0)
@@ -98,54 +98,104 @@ Vector Matrix::operator*(Vector &v) const
     MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
     
-    // Number of rows in matrix stripe
-    int RowNum = mNumRows/ProcNum;
+    // Number of rows that haven't been distributed yet
+    int RestRows = mNumRows;
+    for(int i=0; i<ProcRank; i++)
+    {
+        RestRows = RestRows - RestRows/(ProcNum-i);
+    }
+    // Number of rows in matrix stripe for best load balancing
+    int RowNum = RestRows/(ProcNum-ProcRank);
     // Stripe of the matrix in current process
-    Matrix pProcRows(RowNum,mNumCols);
+    Matrix ProcRows(RowNum,mNumCols);
     // Block of result vector in current process
-    Vector pProcRes(RowNum);
+    Vector ProcRes(RowNum);
     // Final resulting vector
     Vector w(mNumRows);
 
     // Bcast the full vector v1
     MPI_Bcast(&v.front(), v.Size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    /*         Load balancing of scattering of matrix M             */
+    int *pSendInd; // Index of first data element sent to a proc via Scatterv
+    int *pSendNum; // Num of elements sent to a proc via Scatterv
+    RestRows = mNumRows;
+    // Alloc memory for temp objects for scattering
+    pSendInd = new int [ProcNum];
+    pSendNum = new int [ProcNum];
+    // Determine how the matrix is distributed to processes.
+    RowNum = mNumRows/ProcNum;
+    pSendInd[0] = 0;
+    pSendNum[0] = RowNum*mNumCols;
+    for(int i=1; i<ProcNum; i++)
+    {
+        RestRows -= RowNum;
+        RowNum = RestRows/(ProcNum-i);
+        pSendNum[i] = RowNum*mNumCols;
+        pSendInd[i] = pSendInd[i-1]+pSendNum[i-1];
+    }
+
     // Scater the blocks of the matrix
-    MPI_Scatter(&mData.front(), RowNum*mNumCols, MPI_DOUBLE,
-            &pProcRows.front(), RowNum*mNumCols, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatterv(&mData.front(), pSendNum, pSendInd, MPI_DOUBLE,
+            &ProcRows.front(), pSendNum[ProcRank], MPI_DOUBLE,
+            0, MPI_COMM_WORLD);
+    delete [] pSendNum;
+    delete [] pSendInd;
 
     // Testing if the data distribution of the matrix is correct
     /*
     if(ProcRank == 0)
     {
-        std::cout << pProcRows << std::endl;
+        std::cout << ProcRows << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
     if(ProcRank == 1)
     {
-        std::cout << pProcRows << std::endl;
+        std::cout << ProcRows << std::endl;
     }
     */
-    for(int i=0; i<ProcNum; i++)
+    for(int i=0; i<ProcRes.Size(); i++)
     {
         for(int j=0; j<mNumCols; j++)
         {
-            pProcRes[i] += pProcRows(i,j)*v[j];
+            ProcRes[i] += ProcRows(i,j)*v[j];
         }
     }
     // Testing if the parallel multiplication is correct
     /*
     if(ProcRank == 0)
     {
-        std::cout << pProcRes << std::endl;
+        std::cout << ProcRes << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
     if(ProcRank == 1)
     {
-        std::cout << pProcRes << std::endl;
+        std::cout << ProcRes << std::endl;
     }
     */
-    MPI_Allgather(&pProcRes.front(), RowNum, MPI_DOUBLE,
-            &w.front(), RowNum, MPI_DOUBLE, MPI_COMM_WORLD);
+
+    /*         Load balancing of gathering the resulting vector w             */
+    int *pReceiveInd; // Index of first data element from current process to w
+    int *pReceiveNum; // Numb of elements current process sends with Allgatherv
+    // Alloc memory for temp objects for scattering
+    pReceiveInd = new int [ProcNum];
+    pReceiveNum = new int [ProcNum];
+    // Determine how the matrix is distributed to processes.
+    RestRows = mNumRows;
+    pReceiveInd[0] = 0;
+    pReceiveNum[0] = mNumRows/ProcNum;
+    for(int i=1; i<ProcNum; i++)
+    {
+        RestRows -= pReceiveNum[i-1];
+        pReceiveNum[i] = RestRows/(ProcNum - i);
+        pReceiveInd[i] = pReceiveInd[i-1] + pReceiveNum[i-1];
+    }
+
+    MPI_Allgatherv(&ProcRes.front(), pReceiveNum[ProcRank], MPI_DOUBLE,
+            &w.front(), pReceiveNum, pReceiveInd, MPI_DOUBLE, MPI_COMM_WORLD);
+    
+    delete [] pReceiveNum;
+    delete [] pReceiveInd;
 
     return w;
 }
