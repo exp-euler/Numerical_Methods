@@ -6,18 +6,23 @@
 # suppress warnings
 cmake_minimum_required(VERSION 3.21)
 
-#
-project(cpp_with_cmake)
+project(numerical_methods)
 
 # use the C++14 standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# parallel programing
+find_package(MPI REQUIRED)
+
 # any compiler flags that should be used
 #
 # 1. 'O3': enable all optimizations
 # 2. '-Wall': enable all warnings
-set(CMAKE_CXX_FLAGS "-O3 -Wall")
+# 3. '-fopenmp': using MPI
+set(CMAKE_CXX_FLAGS "-O3 -Wall -fopenmp")
+
+################################################################################
 
 # specify the non-header source files that should be compiled
 # use GLOB-ing and * to select many files at once
@@ -28,13 +33,26 @@ set(CMAKE_CXX_FLAGS "-O3 -Wall")
 #    "${PROJECT_SOURCE_DIR}/src/*/*.cpp" #i.e. 'src/d/f.cpp'
 #)
 
+################################################################################
+
 set(CPP_SOURCE
     "${PROJECT_SOURCE_DIR}/src/TimeIntegration.cpp"
     "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
-    "${PROJECT_SOURCE_DIR}/src/main.cpp")
+    "${PROJECT_SOURCE_DIR}/src/Matrix.cpp"
+    "${PROJECT_SOURCE_DIR}/src/Vector.cpp"
+    "${PROJECT_SOURCE_DIR}/src/main.cpp"
+)
 
 # where to find the header files
-include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/src
+                    ${MPI_INCLUDE_PATH})
 
-# name of the executable to be created, and which source files to use
+# line below builds serial executable (remove mpi functions from main.cpp)
+#add_executable(main ${CPP_SOURCE})
+
+# next two lines build mpi executable
 add_executable(main ${CPP_SOURCE})
+target_link_libraries(main PUBLIC ${MPI_LIBRARIES})
+
+# checking where is mpi.h
+#message(STATUS "mpi include dir: ${MPI_INCLUDE_PATH}")
