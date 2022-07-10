@@ -14,13 +14,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # parallel programing
 find_package(MPI REQUIRED)
+find_package(OpenMP REQUIRED)
 
 # any compiler flags that should be used
 #
 # 1. 'O3': enable all optimizations
 # 2. '-Wall': enable all warnings
-# 3. '-fopenmp': using MPI
-set(CMAKE_CXX_FLAGS "-O3 -Wall -fopenmp")
+set(CMAKE_CXX_FLAGS "-O3 -Wall")
 
 ################################################################################
 
@@ -53,6 +53,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src
 # next two lines build mpi executable
 add_executable(main ${CPP_SOURCE})
 target_link_libraries(main PUBLIC ${MPI_LIBRARIES})
+target_link_libraries(main PUBLIC OpenMP::OpenMP_CXX)
 
 # checking where is mpi.h
 #message(STATUS "mpi include dir: ${MPI_INCLUDE_PATH}")

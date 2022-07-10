@@ -8,6 +8,9 @@
 #include <mpich/mpi.h>
 #include <time.h>
 
+#include <omp.h>
+#include <unistd.h>
+
 // Demonstration of specifying a Runge-Kutta method to solve an equation like:
 //
 //                     dy/dt = F(t,y),    y(0) = y0
@@ -37,9 +40,15 @@ int main(int argc, char*argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
 
-    int m = 9;
-    int n = 7;
+    int m = 7;
+    int n = 3;
+    int k = 4;
     Matrix M(m,n);
+    Matrix N(n,k);
+    Matrix R(m,k);
+    Matrix Rpar(m,k);
+
+
     Vector V(n);
     Vector W(m);
     Vector Wpar(m);
@@ -53,8 +62,17 @@ int main(int argc, char*argv[])
         {
             for(int j=0; j<n; j++)
             {
-                //M(i,j)=i*n+j;
-                M(i,j)=rand() % 100;
+                M(i,j)=i*n+j;
+                //M(i,j)=rand() % 100;
+            }
+        }
+
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<k; j++)
+            {
+                N(i,j)=i*n+j;
+                //M(i,j)=rand() % 100;
             }
         }
 
@@ -70,25 +88,36 @@ int main(int argc, char*argv[])
 
     if(ProcRank == 0)
     {
-        W = M.SerialMV(V);
+        //W = M.SerialMV(V);
+        R = M.SerialMM(N);
         
         std::cout << "Result from serial multiplication: " << std::endl;
-        std::cout << W << std::endl;
+        std::cout << R << std::endl;
     }
 
     // Wait for the serial multiplication to finish before continuing
     MPI_Barrier(MPI_COMM_WORLD);
 
-    Wpar = M*V;
+    //Wpar = M*V;
+    Rpar = M*N;
 
     if(ProcRank == 1)
     {
         std::cout << "Result from parallel multiplication: " << std::endl;
-        std::cout << Wpar << std::endl;
+        std::cout << Rpar << std::endl;
     }
 
 
     MPI_Finalize();
+
+    /*
+    #pragma omp parallel
+    {
+        usleep(5000 * omp_get_thread_num());
+        std::cout << "Hellow World... from thread = " << omp_get_thread_num();
+        std::cout << std::endl;
+    }
+    */
 
     return 0;
 }

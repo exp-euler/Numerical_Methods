@@ -18,6 +18,7 @@ class Matrix
         int NumCols() const;
         double& front();
         Vector SerialMV(Vector& V);
+        Matrix SerialMM(Matrix& N);
         //double& operator()(int i, int j);
         //Matrix& operator=(const Matrix& otherMatrix);
         // assignment
@@ -26,10 +27,11 @@ class Matrix
         //Matrix operator+(const Matrix& M1) const;
         //Matrix operator-(const Matrix& M1) const;
         double& operator()(int i, int j);
+        Matrix& operator=(const Matrix &otherMatrix);
         friend std::ostream& operator<<(std::ostream& output, Matrix& M);
         // multiplication
         //Matrix operator*(double a) const;
-        //Matrix operator*(Matrix& M1) const;
+        Matrix operator*(Matrix& M1) const;
         Vector operator*(Vector& v1) const;
 };
 
