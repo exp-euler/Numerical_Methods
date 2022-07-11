@@ -40,13 +40,15 @@ int main(int argc, char*argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
 
-    int m = 7;
-    int n = 3;
-    int k = 4;
+    int m = 7000;
+    int n = 300;
+    int k = 400;
     Matrix M(m,n);
     Matrix N(n,k);
     Matrix R(m,k);
     Matrix Rpar(m,k);
+
+    double dtime;
 
 
     Vector V(n);
@@ -89,35 +91,32 @@ int main(int argc, char*argv[])
     if(ProcRank == 0)
     {
         //W = M.SerialMV(V);
+        dtime = omp_get_wtime();
         R = M.SerialMM(N);
+        dtime = omp_get_wtime() - dtime;
         
         std::cout << "Result from serial multiplication: " << std::endl;
-        std::cout << R << std::endl;
+        std::cout << dtime << std::endl;
+        //std::cout << R << std::endl;
     }
 
     // Wait for the serial multiplication to finish before continuing
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Wpar = M*V;
+    dtime = omp_get_wtime();
     Rpar = M*N;
+    dtime = omp_get_wtime() - dtime;
 
-    if(ProcRank == 1)
+    if(ProcRank == 0)
     {
         std::cout << "Result from parallel multiplication: " << std::endl;
-        std::cout << Rpar << std::endl;
+        std::cout << dtime << std::endl;
+        //std::cout << Rpar << std::endl;
     }
 
 
     MPI_Finalize();
-
-    /*
-    #pragma omp parallel
-    {
-        usleep(5000 * omp_get_thread_num());
-        std::cout << "Hellow World... from thread = " << omp_get_thread_num();
-        std::cout << std::endl;
-    }
-    */
 
     return 0;
 }

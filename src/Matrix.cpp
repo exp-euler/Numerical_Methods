@@ -4,6 +4,8 @@
 #include <cassert>
 #include <vector>
 
+#include <omp.h>
+
 // Overridden copy constructor
 Matrix::Matrix(const Matrix& otherMatrix)
 {
@@ -62,7 +64,6 @@ Matrix Matrix::SerialMM(Matrix &M)
 {
     assert(mNumCols == M.mNumRows);
     Matrix N(mNumRows, M.mNumCols);
-    double temp;
 
     for(int i=0; i<N.mNumRows; i++)
     {
@@ -287,8 +288,12 @@ Matrix Matrix::operator*(Matrix &M) const
         std::cout << ProcRows << std::endl;
     }
     */
+    
+    // Each process runs in parallel using multithreading
+    #pragma omp parallel num_threads(omp_get_max_threads()/ProcNum)
     for(int i=0; i<ProcRes.mNumRows; i++)
     {
+        #pragma omp for
         for(int j=0; j<ProcRes.mNumCols; j++)
         {
             ProcRes(i,j)=0;
