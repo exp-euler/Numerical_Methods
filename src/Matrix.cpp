@@ -1,6 +1,6 @@
 #include "Matrix.hpp"
 #include "Vector.hpp"
-#include <mpich/mpi.h>
+#include <mpi.h>
 #include <cassert>
 #include <vector>
 

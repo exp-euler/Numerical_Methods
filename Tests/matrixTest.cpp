@@ -5,31 +5,14 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
-#include <mpich/mpi.h>
+#include <mpi.h>
 #include <time.h>
 
 #include <omp.h>
 #include <unistd.h>
 
-// Demonstration of specifying a Runge-Kutta method to solve an equation like:
-//
-//                     dy/dt = F(t,y),    y(0) = y0
-//
-// where the function F(t,y) can be arbitrary and is referred as Right Hand Side.
-double RHS(double t, double y)
-{
-    return 1+t;
-}
-
 int main(int argc, char*argv[])
 {
-    /*
-    // Testing of the time integration part of the code (serial for now)
-    TimeIntegration equation;
-    equation.Solve(ClassicalRK::Euler(), &RHS, (0.0+1.0)/100, 2.0, 0, 1, 100);
-    const std::vector<double> &sol = equation.getY();
-    */
-
     // Testing of the operations implemented in parallel with MPI
 
     int ProcNum;        // Number of available processes
@@ -41,7 +24,7 @@ int main(int argc, char*argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
 
     int m = 7000;
-    int n = 300;
+    int n = 3000;
     int k = 400;
     Matrix M(m,n);
     Matrix N(n,k);
@@ -64,7 +47,8 @@ int main(int argc, char*argv[])
         {
             for(int j=0; j<n; j++)
             {
-                M(i,j)=i*n+j;
+                //M(i,j)=i+j;
+                M(i,j)=1;
                 //M(i,j)=rand() % 100;
             }
         }
