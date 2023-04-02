@@ -9,9 +9,11 @@ set(CPP_SOURCE
 
 # next two lines build mpi executable
 # add_executable(main ${CPP_SOURCE})
-add_executable(matrixTest ${CPP_SOURCE})
-target_link_libraries(matrixTest PUBLIC ${MPI_LIBRARIES})
-target_link_libraries(matrixTest PUBLIC OpenMP::OpenMP_CXX)
+if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
+    add_executable(matrixTest ${CPP_SOURCE})
+    target_link_libraries(matrixTest PUBLIC ${MPI_LIBRARIES})
+    target_link_libraries(matrixTest PUBLIC OpenMP::OpenMP_CXX)
+endif(CMAKE_BUILD_TYPE MATCHES HybridCPU)
 
 # checking where is mpi.h
 #message(STATUS "mpi include dir: ${MPI_INCLUDE_PATH}")

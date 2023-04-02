@@ -3,10 +3,8 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
-#include <mpi.h>
 #include <time.h>
 
-#include <omp.h>
 #include <unistd.h>
 
 // Demonstration of specifying a Runge-Kutta method to solve an equation like:

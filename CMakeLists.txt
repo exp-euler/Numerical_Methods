@@ -1,27 +1,45 @@
 project(numerical_methods)
-cmake_minimum_required(VERSION 3.21)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 
 #########################################################################
 #                               Compiler Setup
 #########################################################################
 
-# use the C++14 standard
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-# any compiler flags that should be used
-#
+SET(CMAKE_CXX_COMPILER "g++")
 # 1. 'O3': enable all optimizations
 # 2. '-Wall': enable all warnings
-set(CMAKE_CXX_FLAGS "-O3 -Wall")
+SET(CMAKE_CXX_FLAGS "-std=c++17 -g -O3 -Wall")
+
+IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Serial CACHE STRING "Choose the type of build: Serial SharedCPU DistCPU HybridCPU GPU" FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
 
 #########################################################################
 #                               Parallel Computing
 #########################################################################
 
-# parallel programing
-find_package(MPI REQUIRED)
-find_package(OpenMP REQUIRED)
+if(CMAKE_BUILD_TYPE MATCHES SharedCPU)
+    SET(CMAKE_CXX_COMPILER "g++")
+    find_package(OpenMP REQUIRED)
+    add_definitions(-DSHARED_CPU)
+endif(CMAKE_BUILD_TYPE MATCHES SharedCPU)
+if(CMAKE_BUILD_TYPE MATCHES DistCPU)
+    SET(CMAKE_CXX_COMPILER "mpic++")
+    find_package(MPI REQUIRED)
+    add_definitions(-DDIST_CPU)
+endif(CMAKE_BUILD_TYPE MATCHES DistCPU)
+if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
+    SET(CMAKE_CXX_COMPILER "mpic++")
+    find_package(MPI REQUIRED)
+    find_package(OpenMP REQUIRED)
+    add_definitions(-DHYBRID_CPU)
+endif(CMAKE_BUILD_TYPE MATCHES HybridCPU)
+if(CMAKE_BUILD_TYPE MATCHES GPU)
+    SET(CMAKE_CXX_COMPILER "nvcc")
+    add_definitions(-DGPU)
+endif(CMAKE_BUILD_TYPE MATCHES GPU)
+
 
 ################################################################################
 
