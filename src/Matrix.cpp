@@ -1,10 +1,12 @@
 #include "Matrix.hpp"
 #include "Vector.hpp"
-#include <mpi.h>
 #include <cassert>
 #include <vector>
 
+#ifdef HYBRID_CPU
+#include <mpi.h>
 #include <omp.h>
+#endif
 
 // Overridden copy constructor
 Matrix::Matrix(const Matrix& otherMatrix)
@@ -113,6 +115,47 @@ std::ostream& operator<<(std::ostream& output, Matrix& M)
     return output; // return std::ostream so that we can have chain call of <<
 }
 
+#ifdef SERIAL
+Vector Matrix::operator*(Vector &V) const
+{
+    assert(mNumCols == V.Size());
+    Vector W(mNumRows);
+    double temp;
+
+    for(int i=0; i<mNumRows; i++)
+    {
+        temp = 0;
+        for(int j=0; j<mNumCols; j++)
+        {
+            temp += mData[i*mNumCols+j]*V[j];
+        }
+        W[i]=temp;
+    }
+    return W;
+}
+
+Matrix Matrix::operator*(Matrix &M) const
+{
+    assert(mNumCols == M.mNumRows);
+    Matrix N(mNumRows, M.mNumCols);
+
+    for(int i=0; i<N.mNumRows; i++)
+    {
+        for(int j=0; j<N.mNumCols; j++)
+        {
+            N(i,j)=0;
+            for(int k=0; k<mNumCols; k++)
+            {
+                N(i,j) += mData[i*mNumCols+k]*M(k,j);
+            }
+        }
+    }
+    return N;
+}
+
+#endif
+
+#ifdef HYBRID_CPU
 Vector Matrix::operator*(Vector &v) const
 {
     int ProcNum;        // Number of available processes
@@ -341,3 +384,4 @@ Matrix Matrix::operator*(Matrix &M) const
 
     return N;
 }
+#endif

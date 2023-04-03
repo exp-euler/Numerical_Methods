@@ -4,12 +4,24 @@ set(CPP_SOURCE
     "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
     "${PROJECT_SOURCE_DIR}/src/Matrix.cpp"
     "${PROJECT_SOURCE_DIR}/src/Vector.cpp"
-    "${PROJECT_SOURCE_DIR}/Tests/matrixTest.cpp"
 )
 
-# next two lines build mpi executable
-# add_executable(main ${CPP_SOURCE})
+
+# next lines build serial executables
+if(CMAKE_BUILD_TYPE MATCHES Serial)
+    set(CPP_SOURCE
+        ${CPP_SOURCE}
+        "${PROJECT_SOURCE_DIR}/Tests/matFunTest.cpp"
+    )
+    add_executable(matFunTest ${CPP_SOURCE})
+endif(CMAKE_BUILD_TYPE MATCHES Serial)
+
+# next lines build mpi-openmp executables
 if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
+    set(CPP_SOURCE
+        ${CPP_SOURCE}
+        "${PROJECT_SOURCE_DIR}/Tests/matrixTest.cpp"
+    )
     add_executable(matrixTest ${CPP_SOURCE})
     target_link_libraries(matrixTest PUBLIC ${MPI_LIBRARIES})
     target_link_libraries(matrixTest PUBLIC OpenMP::OpenMP_CXX)

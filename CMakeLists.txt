@@ -5,7 +5,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 #                               Compiler Setup
 #########################################################################
 
-SET(CMAKE_CXX_COMPILER "g++")
 # 1. 'O3': enable all optimizations
 # 2. '-Wall': enable all warnings
 SET(CMAKE_CXX_FLAGS "-std=c++17 -g -O3 -Wall")
@@ -19,6 +18,10 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 #                               Parallel Computing
 #########################################################################
 
+if(CMAKE_BUILD_TYPE MATCHES Serial)
+    SET(CMAKE_CXX_COMPILER "g++")
+    add_definitions(-DSERIAL)
+endif(CMAKE_BUILD_TYPE MATCHES Serial)
 if(CMAKE_BUILD_TYPE MATCHES SharedCPU)
     SET(CMAKE_CXX_COMPILER "g++")
     find_package(OpenMP REQUIRED)
