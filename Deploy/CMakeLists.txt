@@ -1,6 +1,5 @@
 # line below builds serial executable (remove mpi functions from main.cpp)
 set(CPP_SOURCE
-    "${PROJECT_SOURCE_DIR}/src/TimeIntegration.cpp"
     "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
     #"${PROJECT_SOURCE_DIR}/src/Matrix.cpp"
     #"${PROJECT_SOURCE_DIR}/src/Vector.cpp"

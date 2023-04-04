@@ -13,7 +13,8 @@ IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Serial CACHE STRING "Choose the type of build: Serial SharedCPU DistCPU HybridCPU GPU" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-
+# Export compile flags as a json file to be used by coc autocompleter
+SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #########################################################################
 #                               Parallel Computing
 #########################################################################
@@ -67,7 +68,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 #########################################################################
 
 #set(CPP_SOURCE
-#    "${PROJECT_SOURCE_DIR}/src/TimeIntegration.cpp"
 #    "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
 #    "${PROJECT_SOURCE_DIR}/src/Matrix.cpp"
 #    "${PROJECT_SOURCE_DIR}/src/Vector.cpp"

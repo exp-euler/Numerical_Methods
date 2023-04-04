@@ -20,8 +20,8 @@ double RHS(double t, double y)
 int main(int argc, char*argv[])
 {
     // Testing of the time integration part of the code (serial for now)
-    TimeIntegration equation;
+    TimeIntegration<double> equation;
     equation.Solve(ClassicalRK::Euler(), &RHS, (0.0+1.0)/100, 2.0, 0, 1, 100);
-    const std::vector<double> &sol = equation.getY();
+    //const std::vector<double> &sol = equation.getY();
     return 0;
 }
