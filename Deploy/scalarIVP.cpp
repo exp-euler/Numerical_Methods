@@ -1,5 +1,6 @@
 #include "TimeIntegration.hpp"
 #include "Tableaus.hpp"
+#include "Vector.hpp"
 #include <cstdlib>
 #include <vector>
 #include <iostream>

@@ -15,10 +15,10 @@ private:
     std::vector<double> T;
 public:
     void Solve(const ClassicalRK &tableau,
-                 std::function<double(double, double)>F, double h, double y0,
+                 std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
                  double t0, double t1, int N);
     // Return by constant reference to avoid both copying and editing.
-    const std::vector<double> &getY();
+    const std::vector<Y_TYPE> &getY();
     const std::vector<double> &getT();
 };
 
@@ -41,7 +41,7 @@ public:
 // specified in the README file.
 template<typename Y_TYPE>
 void TimeIntegration<Y_TYPE>::Solve(const ClassicalRK &tableau,
-             std::function<double(double, double)>F, double h, double y0,
+             std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
              double t0, double t1, int N)
 {
     Y.reserve(N);
@@ -76,7 +76,7 @@ void TimeIntegration<Y_TYPE>::Solve(const ClassicalRK &tableau,
 }
 
 template<typename Y_TYPE>
-const std::vector<double> &TimeIntegration<Y_TYPE>::getY()
+const std::vector<Y_TYPE> &TimeIntegration<Y_TYPE>::getY()
 {
     return Y;
 }

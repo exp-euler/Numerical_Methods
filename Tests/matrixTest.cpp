@@ -26,17 +26,17 @@ int main(int argc, char*argv[])
     int m = 7000;
     int n = 3000;
     int k = 400;
-    Matrix M(m,n);
-    Matrix N(n,k);
-    Matrix R(m,k);
-    Matrix Rpar(m,k);
+    Matrix<double> M(m,n);
+    Matrix<double> N(n,k);
+    Matrix<double> R(m,k);
+    Matrix<double> Rpar(m,k);
 
     double dtime;
 
 
-    Vector V(n);
-    Vector W(m);
-    Vector Wpar(m);
+    Vector<double> V(n);
+    Vector<double> W(m);
+    Vector<double> Wpar(m);
 
     // Use time as seed for random number generator
     srand(time(0));
