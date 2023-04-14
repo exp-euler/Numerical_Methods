@@ -15,8 +15,8 @@ private:
     std::vector<double> T;
 public:
     void Solve(const ClassicalRK &tableau,
-                 std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
-                 double t0, double t1, int N);
+               std::function<Y_TYPE(double, Y_TYPE)>F, double h,
+               Y_TYPE y0, double t0, double t1, int N);
     // Return by constant reference to avoid both copying and editing.
     const std::vector<Y_TYPE> &getY();
     const std::vector<double> &getT();
@@ -47,25 +47,29 @@ void TimeIntegration<Y_TYPE>::Solve(const ClassicalRK &tableau,
     Y.reserve(N);
     T.reserve(N);
 
-    double y = y0;
+    Y_TYPE y = y0;
     double t = t0;
 
     for(int i=0; i<N; i++)
     {
-        std::vector<double> k{F(t,y)};
+        std::vector<Y_TYPE> k{F(t,y)};
         for(std::size_t j=0; j<tableau.a.size(); j++)
         {
-            double temp = 0;
+            Y_TYPE temp = 0;
             for(std::size_t m=0; m<tableau.a[j].size(); m++)
             {
-                temp += tableau.a[j][m]*k[m];
+                // overload multiplication by constant so that
+                // constant is in front
+                temp += k[m]*tableau.a[j][m];
             }
             k.push_back(F(t+tableau.c[j]*h, y + temp*h));
         }
 
         for(std::size_t j=0; j<tableau.b.size(); j++)
         {
-            y += tableau.b[j]*h*k[j];
+            // overload multiplication by constant so that
+            // constant is in front
+            y += k[j]*tableau.b[j]*h;
         }
         t += h;
 

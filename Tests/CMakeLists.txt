@@ -8,9 +8,11 @@ set(CPP_SOURCE
 if(CMAKE_BUILD_TYPE MATCHES Serial)
     set(CPP_SOURCE
         ${CPP_SOURCE}
-        "${PROJECT_SOURCE_DIR}/Tests/matFunTest.cpp"
+        #"${PROJECT_SOURCE_DIR}/Tests/matFunTest.cpp"
+        "${PROJECT_SOURCE_DIR}/Tests/vectorIVP.cpp"
     )
     add_executable(matFunTest ${CPP_SOURCE})
+    add_executable(vectorIVP ${CPP_SOURCE})
 endif(CMAKE_BUILD_TYPE MATCHES Serial)
 
 # next lines build mpi-openmp executables

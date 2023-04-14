@@ -19,6 +19,11 @@ class Vector
         DATA_TYPE& front();
         DATA_TYPE& operator[](int i);
         Vector<DATA_TYPE>& operator=(const Vector<DATA_TYPE>& otherVector);
+        Vector<DATA_TYPE>& operator+(const Vector<DATA_TYPE>& otherVector);
+        Vector<DATA_TYPE>& operator+=(const Vector<DATA_TYPE>& otherVector);
+        Vector<DATA_TYPE>& operator+(const DATA_TYPE scalar);
+        Vector<DATA_TYPE>& operator*(const DATA_TYPE scalar);
+
         template<typename D_TYPE>
         friend std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v);
 };
@@ -76,6 +81,48 @@ Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator=(const Vector<DATA_TYPE> &otherVe
     for(int i=0; i<mSize; i++)
     {
         mData[i] = otherVector.mData[i];
+    }
+    return *this;
+}
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator+(const Vector<DATA_TYPE> &otherVector)
+{
+    assert(mSize == otherVector.mSize);
+    for(int i=0; i<mSize; i++)
+    {
+        mData[i] = mData[i] + otherVector.mData[i];
+    }
+    return *this;
+}
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator+=(const Vector<DATA_TYPE> &otherVector)
+{
+    assert(mSize == otherVector.mSize);
+    for(int i=0; i<mSize; i++)
+    {
+        mData[i] = mData[i] + otherVector.mData[i];
+    }
+    return *this;
+}
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator+(const DATA_TYPE scalar)
+{
+    for(int i=0; i<mSize; i++)
+    {
+        mData[i] = mData[i] + scalar;
+    }
+    return *this;
+}
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator*(const DATA_TYPE scalar)
+{
+    for(int i=0; i<mSize; i++)
+    {
+        mData[i] = mData[i] * scalar;
     }
     return *this;
 }
