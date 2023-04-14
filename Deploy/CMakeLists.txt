@@ -1,16 +1,14 @@
-# line below builds serial executable (remove mpi functions from main.cpp)
-set(CPP_SOURCE
-    "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
-    #"${PROJECT_SOURCE_DIR}/src/Matrix.cpp"
-    #"${PROJECT_SOURCE_DIR}/src/Vector.cpp"
-    "${PROJECT_SOURCE_DIR}/Deploy/scalarIVP.cpp"
-)
-add_executable(scalarIVP ${CPP_SOURCE})
+# next lines build serial executables
+if(CMAKE_BUILD_TYPE MATCHES Serial)
+    add_executable(scalarIVP ${CPP_SOURCE} ./scalarIVP.cpp)
+endif(CMAKE_BUILD_TYPE MATCHES Serial)
 
-# next two lines build mpi executable
-# add_executable(main ${CPP_SOURCE})
-#target_link_libraries(main PUBLIC ${MPI_LIBRARIES})
-#target_link_libraries(main PUBLIC OpenMP::OpenMP_CXX)
+# next lines build mpi-openmp executables
+if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
+    add_executable(scalarIVP ${CPP_SOURCE} ./scalarIVP.cpp)
+    target_link_libraries(scalarIVP PUBLIC ${MPI_LIBRARIES})
+    target_link_libraries(scalarIVP PUBLIC OpenMP::OpenMP_CXX)
+endif(CMAKE_BUILD_TYPE MATCHES HybridCPU)
 
 # checking where is mpi.h
 #message(STATUS "mpi include dir: ${MPI_INCLUDE_PATH}")

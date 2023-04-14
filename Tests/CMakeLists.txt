@@ -1,27 +1,12 @@
-# line below builds serial executable (remove mpi functions from main.cpp)
-set(CPP_SOURCE
-    "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
-)
-
-
 # next lines build serial executables
 if(CMAKE_BUILD_TYPE MATCHES Serial)
-    set(CPP_SOURCE
-        ${CPP_SOURCE}
-        #"${PROJECT_SOURCE_DIR}/Tests/matFunTest.cpp"
-        "${PROJECT_SOURCE_DIR}/Tests/vectorIVP.cpp"
-    )
-    add_executable(matFunTest ${CPP_SOURCE})
-    add_executable(vectorIVP ${CPP_SOURCE})
+    add_executable(matFunTest ${CPP_SOURCE} ./matFunTest.cpp)
+    add_executable(vectorIVP ${CPP_SOURCE} ./vectorIVP.cpp)
 endif(CMAKE_BUILD_TYPE MATCHES Serial)
 
 # next lines build mpi-openmp executables
 if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
-    set(CPP_SOURCE
-        ${CPP_SOURCE}
-        "${PROJECT_SOURCE_DIR}/Tests/matrixTest.cpp"
-    )
-    add_executable(matrixTest ${CPP_SOURCE})
+    add_executable(matrixTest ${CPP_SOURCE} ./matrixTest.cpp)
     target_link_libraries(matrixTest PUBLIC ${MPI_LIBRARIES})
     target_link_libraries(matrixTest PUBLIC OpenMP::OpenMP_CXX)
 endif(CMAKE_BUILD_TYPE MATCHES HybridCPU)

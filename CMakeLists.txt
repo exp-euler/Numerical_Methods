@@ -67,21 +67,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 #                       Source Files and Header Files
 #########################################################################
 
-#set(CPP_SOURCE
-#    "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
-#    "${PROJECT_SOURCE_DIR}/src/Matrix.cpp"
-#    "${PROJECT_SOURCE_DIR}/src/Vector.cpp"
-#    "${PROJECT_SOURCE_DIR}/src/main.cpp"
-#)
-
 # where to find the header files
 include_directories(${PROJECT_SOURCE_DIR}/src
                     ${MPI_INCLUDE_PATH})
 
+# where to find the library source files
+set(CPP_SOURCE
+    "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
+)
 
-#add_executable(main ${CPP_SOURCE})
-#target_link_libraries(main PUBLIC ${MPI_LIBRARIES})
-#target_link_libraries(main PUBLIC OpenMP::OpenMP_CXX)
+
 #########################################################################
 #                Main files that use the functionalities
 #########################################################################
