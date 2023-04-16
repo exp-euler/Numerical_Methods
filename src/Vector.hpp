@@ -25,6 +25,10 @@ class Vector
         Vector<DATA_TYPE>& operator*(const DATA_TYPE scalar);
 
         template<typename D_TYPE>
+        friend Vector<D_TYPE> operator+(const D_TYPE scalar, const Vector<D_TYPE>& otherVector);
+        template<typename D_TYPE>
+        friend Vector<D_TYPE> operator*(const D_TYPE scalar, const Vector<D_TYPE>& otherVector);
+        template<typename D_TYPE>
         friend std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v);
 };
 
@@ -125,6 +129,28 @@ Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator*(const DATA_TYPE scalar)
         mData[i] = mData[i] * scalar;
     }
     return *this;
+}
+
+template<typename D_TYPE>
+Vector<D_TYPE> operator+(const D_TYPE scalar, const Vector<D_TYPE>& otherVector)
+{
+    Vector<D_TYPE> vec(otherVector.mSize);
+    for(int i=0; i<otherVector.mSize; i++)
+    {
+        vec.mData[i] = otherVector.mData[i] + scalar;
+    }
+    return vec;
+}
+
+template<typename D_TYPE>
+Vector<D_TYPE> operator*(const D_TYPE scalar, const Vector<D_TYPE>& otherVector)
+{
+    Vector<D_TYPE> vec(otherVector.mSize);
+    for(int i=0; i<otherVector.mSize; i++)
+    {
+        vec.mData[i] = otherVector.mData[i] * scalar;
+    }
+    return vec;
 }
 
 template<typename D_TYPE>

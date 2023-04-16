@@ -58,18 +58,14 @@ void TimeIntegration<Y_TYPE>::Solve(const ClassicalRK &tableau,
             Y_TYPE temp = 0;
             for(std::size_t m=0; m<tableau.a[j].size(); m++)
             {
-                // overload multiplication by constant so that
-                // constant is in front
-                temp += k[m]*tableau.a[j][m];
+                temp += tableau.a[j][m]*k[m];
             }
             k.push_back(F(t+tableau.c[j]*h, y + temp*h));
         }
 
         for(std::size_t j=0; j<tableau.b.size(); j++)
         {
-            // overload multiplication by constant so that
-            // constant is in front
-            y += k[j]*tableau.b[j]*h;
+            y += tableau.b[j]*h*k[j];
         }
         t += h;
 

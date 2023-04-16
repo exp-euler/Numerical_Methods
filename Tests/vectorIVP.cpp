@@ -16,5 +16,6 @@ int main() {
     d_vector y0(2);
     y0[0] = 1; y0[1] = 1;
     system.Solve(ClassicalRK::Euler(), &RHS, h, y0, t0, t1, steps);
+
     return 0;
 }
