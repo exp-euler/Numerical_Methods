@@ -17,5 +17,10 @@ int main() {
     y0[0] = 1; y0[1] = 1;
     system.Solve(ClassicalRK::Euler(), &RHS, h, y0, t0, t1, steps);
 
+    // Test
+    d_vector y_test(2);
+    y_test = 2.0+y0;
+    std::cout << y_test[0] << "\n";
+    std::cout << y0[0] << "\n";
     return 0;
 }

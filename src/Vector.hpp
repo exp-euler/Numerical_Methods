@@ -19,10 +19,10 @@ class Vector
         DATA_TYPE& front();
         DATA_TYPE& operator[](int i);
         Vector<DATA_TYPE>& operator=(const Vector<DATA_TYPE>& otherVector);
-        Vector<DATA_TYPE>& operator+(const Vector<DATA_TYPE>& otherVector);
-        Vector<DATA_TYPE>& operator+=(const Vector<DATA_TYPE>& otherVector);
-        Vector<DATA_TYPE>& operator+(const DATA_TYPE scalar);
-        Vector<DATA_TYPE>& operator*(const DATA_TYPE scalar);
+        Vector<DATA_TYPE> operator+(const Vector<DATA_TYPE>& otherVector);
+        Vector<DATA_TYPE> operator+=(const Vector<DATA_TYPE>& otherVector);
+        Vector<DATA_TYPE> operator+(const DATA_TYPE scalar);
+        Vector<DATA_TYPE> operator*(const DATA_TYPE scalar);
 
         template<typename D_TYPE>
         friend Vector<D_TYPE> operator+(const D_TYPE scalar, const Vector<D_TYPE>& otherVector);
@@ -90,45 +90,49 @@ Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator=(const Vector<DATA_TYPE> &otherVe
 }
 
 template<typename DATA_TYPE>
-Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator+(const Vector<DATA_TYPE> &otherVector)
+Vector<DATA_TYPE> Vector<DATA_TYPE>::operator+(const Vector<DATA_TYPE> &otherVector)
 {
     assert(mSize == otherVector.mSize);
+    Vector<DATA_TYPE> vec(mSize);
     for(int i=0; i<mSize; i++)
     {
-        mData[i] = mData[i] + otherVector.mData[i];
+        vec.mData[i] = mData[i] + otherVector.mData[i];
     }
-    return *this;
+    return vec;
 }
 
 template<typename DATA_TYPE>
-Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator+=(const Vector<DATA_TYPE> &otherVector)
+Vector<DATA_TYPE> Vector<DATA_TYPE>::operator+=(const Vector<DATA_TYPE> &otherVector)
 {
     assert(mSize == otherVector.mSize);
+    Vector<DATA_TYPE> vec(mSize);
     for(int i=0; i<mSize; i++)
     {
-        mData[i] = mData[i] + otherVector.mData[i];
+        vec.mData[i] = mData[i] + otherVector.mData[i];
     }
-    return *this;
+    return vec;
 }
 
 template<typename DATA_TYPE>
-Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator+(const DATA_TYPE scalar)
+Vector<DATA_TYPE> Vector<DATA_TYPE>::operator+(const DATA_TYPE scalar)
 {
+    Vector<DATA_TYPE> vec(mSize);
     for(int i=0; i<mSize; i++)
     {
-        mData[i] = mData[i] + scalar;
+        vec.mData[i] = mData[i] + scalar;
     }
-    return *this;
+    return vec;
 }
 
 template<typename DATA_TYPE>
-Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator*(const DATA_TYPE scalar)
+Vector<DATA_TYPE> Vector<DATA_TYPE>::operator*(const DATA_TYPE scalar)
 {
+    Vector<DATA_TYPE> vec(mSize);
     for(int i=0; i<mSize; i++)
     {
-        mData[i] = mData[i] * scalar;
+        vec.mData[i] = mData[i] * scalar;
     }
-    return *this;
+    return vec;
 }
 
 template<typename D_TYPE>
