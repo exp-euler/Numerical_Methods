@@ -1,3 +1,4 @@
+//TODO: Add the exact solution and do a check
 #include "TimeIntegration.hpp"
 #include "Vector.hpp"
 
@@ -19,8 +20,9 @@ int main() {
 
     // Test
     d_vector y_test(2);
-    y_test = 2.0+y0;
-    std::cout << y_test[0] << "\n";
-    std::cout << y0[0] << "\n";
+    y_test = y0;
+    y_test += y0;
+    std::cout << y_test << "\n";
+    std::cout << y0 << "\n";
     return 0;
 }

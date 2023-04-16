@@ -105,12 +105,11 @@ template<typename DATA_TYPE>
 Vector<DATA_TYPE> Vector<DATA_TYPE>::operator+=(const Vector<DATA_TYPE> &otherVector)
 {
     assert(mSize == otherVector.mSize);
-    Vector<DATA_TYPE> vec(mSize);
     for(int i=0; i<mSize; i++)
     {
-        vec.mData[i] = mData[i] + otherVector.mData[i];
+        mData[i] = mData[i] + otherVector.mData[i];
     }
-    return vec;
+    return *this;
 }
 
 template<typename DATA_TYPE>
