@@ -15,7 +15,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: configure
       working-directory: ${{github.workspace}}/build
-      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Serial ../..
+      run: ls
+      run: mkdir build && cd build
+      run: cmake -DCMAKE_BUILD_TYPE=Serial ../..
     - name: make
       working-directory: ${{github.workspace}}/build
       run: make
