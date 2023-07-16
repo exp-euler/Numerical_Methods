@@ -29,8 +29,8 @@ class Matrix
         // The following is used in the MPI part of this file
         // TODO: Do this step in a different way
         DATA_TYPE& front();
-        Matrix<DATA_TYPE> operator*(Matrix<DATA_TYPE>& M) const;
-        Vector<DATA_TYPE> operator*(Vector<DATA_TYPE>& v1) const;
+        //Matrix<DATA_TYPE> operator*(Matrix<DATA_TYPE>& M) const;
+        //Vector<DATA_TYPE> operator*(Vector<DATA_TYPE>& v1) const;
 
         DATA_TYPE inf_norm() const;
 
