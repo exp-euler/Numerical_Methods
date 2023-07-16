@@ -3,6 +3,7 @@
 
 #include "Vector.hpp"
 #include <vector>
+#include <bits/stdc++.h>
 #include <cassert>
 
 #ifdef HYBRID_CPU
@@ -20,27 +21,40 @@ class Matrix
     public:
         Matrix(const Matrix& otherMatrix);
         Matrix(int m, int n);
+        static Matrix<DATA_TYPE> Diagonal(int m, int n, DATA_TYPE k);
         //~Matrix();
         int NumRows() const;
         int NumCols() const;
+
+        // The following is used in the MPI part of this file
+        // TODO: Do this step in a different way
         DATA_TYPE& front();
+        Matrix<DATA_TYPE> operator*(Matrix<DATA_TYPE>& M) const;
+        Vector<DATA_TYPE> operator*(Vector<DATA_TYPE>& v1) const;
+
+        DATA_TYPE inf_norm() const;
+
         Vector<DATA_TYPE> SerialMV(Vector<DATA_TYPE>& V);
         Matrix<DATA_TYPE> SerialMM(Matrix<DATA_TYPE>& N);
-        //double& operator()(int i, int j);
-        //Matrix& operator=(const Matrix& otherMatrix);
-        // assignment
-        //Matrix operator+() const;
+
+        // Addition/Substraction
         //Matrix operator-() const;
-        //Matrix operator+(const Matrix& M1) const;
-        //Matrix operator-(const Matrix& M1) const;
+        Matrix<DATA_TYPE> operator+(const Matrix<DATA_TYPE>& M) const;
+        Matrix<DATA_TYPE> operator-(const Matrix<DATA_TYPE>& M) const;
+
+        // multiplication
+        Matrix<DATA_TYPE> operator*(DATA_TYPE a) const;
+        Matrix<DATA_TYPE> operator*(const Matrix<DATA_TYPE>& M) const;
+        Vector<DATA_TYPE> operator*(const Vector<DATA_TYPE>& v1) const;
+
+        // Overload both const and non-const version so we can use it
+        // on a const this or equivalent referance.
         DATA_TYPE& operator()(int i, int j);
+        const DATA_TYPE& operator()(int i, int j) const;
+
         Matrix<DATA_TYPE>& operator=(const Matrix<DATA_TYPE> &otherMatrix);
         template<typename D_TYPE>
         friend std::ostream& operator<<(std::ostream& output, Matrix<D_TYPE>& M);
-        // multiplication
-        //Matrix operator*(double a) const;
-        Matrix<DATA_TYPE> operator*(Matrix<DATA_TYPE>& M1) const;
-        Vector<DATA_TYPE> operator*(Vector<DATA_TYPE>& v1) const;
 };
 
 
@@ -73,6 +87,17 @@ Matrix<DATA_TYPE>::Matrix(int m, int n)
     mData.resize(mNumRows*mNumCols);
 }
 
+// Named constructor to give identity matrix
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::Diagonal(int m, int n, DATA_TYPE k)
+{
+    assert(m==n);
+    Matrix<DATA_TYPE> D(m,n);
+    for(int i=0; i<m; i++)
+        D(i,i) = k;
+    return D;
+}
+
 template<typename DATA_TYPE>
 int Matrix<DATA_TYPE>::NumRows() const
 {
@@ -89,6 +114,19 @@ template<typename DATA_TYPE>
 DATA_TYPE& Matrix<DATA_TYPE>::front()
 {
     return mData.front();
+}
+
+template<typename DATA_TYPE>
+DATA_TYPE Matrix<DATA_TYPE>::inf_norm() const
+{
+    DATA_TYPE row_sums[mNumRows] = {};
+    for(int i=0; i<mNumRows; i++)
+    {
+        for(int j=0; j<mNumCols; j++)
+            row_sums[i] += std::abs(mData[i*mNumCols+j]);
+    }
+
+    return *std::max_element(row_sums, row_sums+mNumRows);
 }
 
 template<typename DATA_TYPE>
@@ -131,6 +169,16 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::SerialMM(Matrix<DATA_TYPE> &M)
 }
 
 template<typename DATA_TYPE>
+const DATA_TYPE& Matrix<DATA_TYPE>::operator()(int i, int j) const
+{
+    assert(i > -1);
+    assert(i < mNumRows);
+    assert(j > -1);
+    assert(j < mNumCols);
+    return mData[i*mNumCols+j];
+}
+
+template<typename DATA_TYPE>
 DATA_TYPE& Matrix<DATA_TYPE>::operator()(int i, int j)
 {
     assert(i > -1);
@@ -168,8 +216,25 @@ std::ostream& operator<<(std::ostream& output, Matrix<D_TYPE>& M)
 }
 
 #ifdef SERIAL
+
 template<typename DATA_TYPE>
-Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(DATA_TYPE a) const
+{
+    Matrix<DATA_TYPE> N(mNumRows, mNumCols);
+
+    for(int i=0; i<mNumRows; i++)
+    {
+        for(int j=0; j<mNumCols; j++)
+        {
+            N(i,j)=a*mData[i*mNumCols+j];
+        }
+    }
+    return N;
+}
+
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(const Vector<DATA_TYPE> &V) const
 {
     assert(mNumCols == V.Size());
     Vector<DATA_TYPE> W(mNumRows);
@@ -188,7 +253,7 @@ Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
 }
 
 template<typename DATA_TYPE>
-Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Matrix<DATA_TYPE> &M) const
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(const Matrix<DATA_TYPE> &M) const
 {
     assert(mNumCols == M.mNumRows);
     Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
@@ -207,10 +272,41 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Matrix<DATA_TYPE> &M) const
     return N;
 }
 
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator+(const Matrix<DATA_TYPE> &M) const
+{
+    assert(mNumCols == M.mNumRows);
+    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
+
+    for(int i=0; i<N.mNumRows; i++)
+    {
+        for(int j=0; j<N.mNumCols; j++)
+        {
+            N(i,j)=mData[i*mNumCols+j] + M(i,j);
+        }
+    }
+    return N;
+}
+
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator-(const Matrix<DATA_TYPE> &M) const
+{
+    assert(mNumCols == M.mNumRows);
+    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
+
+    for(int i=0; i<N.mNumRows; i++)
+    {
+        for(int j=0; j<N.mNumCols; j++)
+        {
+            N(i,j)=mData[i*mNumCols+j] - M(i,j);
+        }
+    }
+    return N;
+}
+
+
 #endif
 
-// LAST FUNCTION TO TRANSLATE TO TEMPLATES
-// ALSO Vector.hpp NEEDS TO BE DONE
 #ifdef HYBRID_CPU
 template<typename DATA_TYPE>
 Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &v) const
