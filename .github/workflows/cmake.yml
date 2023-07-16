@@ -9,12 +9,12 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      working-directory: ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}
       run: ls && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Serial ../..
     - name: make
       working-directory: ${{github.workspace}}/build
