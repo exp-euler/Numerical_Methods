@@ -1,6 +1,7 @@
 //TODO: Add the exact solution and do a check
 #include "TimeIntegration.hpp"
 #include "Vector.hpp"
+#include <cmath>
 
 typedef Vector<double> d_vector;
 
