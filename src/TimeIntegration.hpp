@@ -1,3 +1,5 @@
+//TODO: Pass F by a lambda instead of std::function
+//TODO: Add time adjusting capabilities.
 #ifndef TIMEINTEGRATION
 #define TIMEINTEGRATION
 
@@ -5,8 +7,11 @@
 #include <vector>
 #include <functional>
 
-// Provides a function to solve the ODE and stores the approximated solution in Y
-// as well as the timesteps T.
+// Provides a function to solve the ODE and stores the approximated
+// solution in Y as well as the timesteps T.
+
+// Y_TYPE parameter in case we ever need to work with
+// types other than double.
 template<typename Y_TYPE>
 class TimeIntegration
 {
@@ -49,13 +54,16 @@ void TimeIntegration<Y_TYPE>::Solve(const ClassicalRK &tableau,
 
     Y_TYPE y = y0;
     double t = t0;
+    // Initialize here as work-around to be able to work with
+    // scalars and vectors at the same time.
+    Y_TYPE temp = y0;
 
     for(int i=0; i<N; i++)
     {
         std::vector<Y_TYPE> k{F(t,y)};
         for(std::size_t j=0; j<tableau.a.size(); j++)
         {
-            Y_TYPE temp = 0;
+            temp = 0;
             for(std::size_t m=0; m<tableau.a[j].size(); m++)
             {
                 temp += tableau.a[j][m]*k[m];
