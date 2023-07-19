@@ -19,7 +19,10 @@ class Vector
         DATA_TYPE& front();
         DATA_TYPE& operator[](int i);
         Vector<DATA_TYPE>& operator=(const Vector<DATA_TYPE>& otherVector);
+        // TODO: Instead of double, use a template here.
+        Vector<DATA_TYPE>& operator=(double a);
         Vector<DATA_TYPE> operator+(const Vector<DATA_TYPE>& otherVector);
+        Vector<DATA_TYPE> operator-(const Vector<DATA_TYPE>& otherVector);
         Vector<DATA_TYPE> operator+=(const Vector<DATA_TYPE>& otherVector);
         Vector<DATA_TYPE> operator+(const DATA_TYPE scalar);
         Vector<DATA_TYPE> operator*(const DATA_TYPE scalar);
@@ -90,6 +93,17 @@ Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator=(const Vector<DATA_TYPE> &otherVe
 }
 
 template<typename DATA_TYPE>
+Vector<DATA_TYPE>& Vector<DATA_TYPE>::operator=(double a)
+{
+    assert(mSize > 0); // TODO: Find better assert?
+    for(int i=0; i<mSize; i++)
+    {
+        mData[i] = a;
+    }
+    return *this;
+}
+
+template<typename DATA_TYPE>
 Vector<DATA_TYPE> Vector<DATA_TYPE>::operator+(const Vector<DATA_TYPE> &otherVector)
 {
     assert(mSize == otherVector.mSize);
@@ -97,6 +111,18 @@ Vector<DATA_TYPE> Vector<DATA_TYPE>::operator+(const Vector<DATA_TYPE> &otherVec
     for(int i=0; i<mSize; i++)
     {
         vec.mData[i] = mData[i] + otherVector.mData[i];
+    }
+    return vec;
+}
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE> Vector<DATA_TYPE>::operator-(const Vector<DATA_TYPE> &otherVector)
+{
+    assert(mSize == otherVector.mSize);
+    Vector<DATA_TYPE> vec(mSize);
+    for(int i=0; i<mSize; i++)
+    {
+        vec.mData[i] = mData[i] - otherVector.mData[i];
     }
     return vec;
 }
