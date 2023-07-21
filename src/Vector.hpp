@@ -185,10 +185,20 @@ Vector<D_TYPE> operator*(const D_TYPE scalar, const Vector<D_TYPE>& otherVector)
 template<typename D_TYPE>
 std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v)
 {
-    output << std::endl;
+    // Format for when outputting to console
+    if(&output == &std::cout){
+        output << std::endl;
+        for(int i=0; i<v.Size(); i++)
+        {
+            std::cout << v[i] << std::endl;
+        }
+        return output; // return std::ostream so that we can have chain call of <<
+    }
+
+    // Format for when outputting to csv file
     for(int i=0; i<v.Size(); i++)
     {
-        std::cout << v[i] << std::endl;
+        output << v[i] << "#";
     }
     return output; // return std::ostream so that we can have chain call of <<
 }

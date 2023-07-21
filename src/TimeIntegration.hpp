@@ -4,8 +4,10 @@
 #define TIMEINTEGRATION
 
 #include "Tableaus.hpp"
+#include <fstream>
 #include <vector>
 #include <functional>
+#include <sys/stat.h>
 
 // Provides a function to solve the ODE and stores the approximated
 // solution in Y as well as the timesteps T.
@@ -25,6 +27,8 @@ public:
     // Return by constant reference to avoid both copying and editing.
     const std::vector<Y_TYPE> &getY();
     const std::vector<double> &getT();
+
+    void save_simulation(std::string file_name);
 };
 
 // ###################################################################
@@ -93,6 +97,28 @@ template<typename Y_TYPE>
 const std::vector<double> &TimeIntegration<Y_TYPE>::getT()
 {
     return T;
+}
+
+template<typename Y_TYPE>
+void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name)
+{
+    std::ofstream file_o;
+
+    // Check if file exists.
+    struct stat buffer;
+    if(stat (file_name.c_str(), &buffer) != 0) {
+        file_o.open(file_name);
+
+        // Add a header to the csv file.
+        file_o << "time,solution\n";
+    }
+
+    // Write the data for each time-step taken.
+    for(size_t i=0; i<Y.size(); i++) {
+        file_o << T[i] << "," << Y[i] << "\n";
+    }
+
+    file_o.close();
 }
 
 #endif
