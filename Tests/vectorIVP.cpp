@@ -1,6 +1,7 @@
 #include "TimeIntegration.hpp"
 #include "Vector.hpp"
 #include <cmath>
+#include <getopt.h>
 
 typedef Vector<double> d_vector;
 
