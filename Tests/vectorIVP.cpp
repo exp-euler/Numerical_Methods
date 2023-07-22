@@ -12,10 +12,31 @@ d_vector RHS(double t, d_vector y) {
     return rhs;
 }
 
+d_vector RHS_Lambert1(double t, d_vector y) {
+    d_vector rhs(y.Size());
+    rhs[0] = (-2)*y[0] + y[1] + 2*std::sin(t);
+    rhs[1] = y[0] + (-2)*y[1] + 2*(std::cos(t) - std::sin(t));
+    return rhs;
+}
+
+d_vector RHS_Lambert2(double t, d_vector y) {
+    d_vector rhs(y.Size());
+    rhs[0] = (-2)*y[0] + y[1] + 2*std::sin(t);
+    rhs[1] = 998*y[0] + (-999)*y[1] + 999*(std::cos(t) - std::sin(t));
+    return rhs;
+}
+
 d_vector exact(double t) {
     d_vector sol(2);
     sol[0] = (-8.0/5.0)*std::exp(-t)*(-1) - (4.0/5.0)*std::exp(4*t)*2;
     sol[1] = (-8.0/5.0)*std::exp(-t)*1 - (4.0/5.0)*std::exp(4*t)*3;
+    return sol;
+}
+
+d_vector exact_Lambert(double t) {
+    d_vector sol(2);
+    sol[0] = 2*std::exp(-t) + std::sin(t);
+    sol[1] = 2*std::exp(-t) + std::cos(t);
     return sol;
 }
 
@@ -59,12 +80,16 @@ int main(int argc, char **argv) {
     d_vector y0(2);
     y0[0] = 0; y0[1] = -4;
 
-    TimeIntegration<d_vector> system;
-    system.Solve(ClassicalRK::Euler(), &RHS, h, y0, t0, t1, steps);
+    //TimeIntegration<d_vector> system;
+    //system.Solve(ClassicalRK::Euler(), &RHS, h, y0, t0, t1, steps);
 
-    d_vector error(exact(t1)-system.getY()[system.getY().size()-1]);
-    std::cout << "Error is: " << error << "\n";
+    d_vector y0Lam(2);
+    y0Lam[0] = 2; y0Lam[1] = 3;
 
-    system.save_simulation("vector_output.csv", steps);
+    TimeIntegration<d_vector> Lambert;
+    Lambert.Solve(ClassicalRK::Euler(), &RHS_Lambert2, h, y0Lam, t0, t1, steps);
+
+
+    Lambert.save_simulation("vector_output.csv", steps);
     return 0;
 }
