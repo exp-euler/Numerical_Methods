@@ -24,5 +24,7 @@ int main(int argc, char*argv[])
     TimeIntegration<double> equation;
     equation.Solve(ClassicalRK::Euler(), &RHS, (0.0+1.0)/100, 2.0, 0, 1, 100);
     //const std::vector<double> &sol = equation.getY();
+
+    equation.save_simulation("scalar_output.csv", 100);
     return 0;
 }

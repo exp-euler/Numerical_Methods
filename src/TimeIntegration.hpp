@@ -28,7 +28,7 @@ public:
     const std::vector<Y_TYPE> &getY();
     const std::vector<double> &getT();
 
-    void save_simulation(std::string file_name);
+    void save_simulation(std::string file_name, int tau);
 };
 
 // ###################################################################
@@ -100,8 +100,10 @@ const std::vector<double> &TimeIntegration<Y_TYPE>::getT()
 }
 
 template<typename Y_TYPE>
-void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name)
+void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name, int tau)
 {
+    file_name.erase(file_name.end()-4, file_name.end());
+    file_name = file_name + "_" + std::to_string(tau) + ".csv";
     std::ofstream file_o;
 
     // Check if file exists.
@@ -110,7 +112,10 @@ void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name)
         file_o.open(file_name);
 
         // Add a header to the csv file.
-        file_o << "time,solution\n";
+        //file_o << "time,";
+        //for(size_t i=0; i<2; i++)
+        //    file_o << "x"<< i << ",";
+        //file_o << "\n";
     }
 
     // Write the data for each time-step taken.

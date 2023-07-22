@@ -198,7 +198,7 @@ std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v)
     // Format for when outputting to csv file
     for(int i=0; i<v.Size(); i++)
     {
-        output << v[i] << "#";
+        output << v[i] << ",";
     }
     return output; // return std::ostream so that we can have chain call of <<
 }
