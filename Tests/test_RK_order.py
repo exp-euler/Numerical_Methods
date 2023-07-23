@@ -15,10 +15,10 @@ def Lambert_exact(t):
     return arr
 
 
-def order_plot(directory, steps, exact_sol, interval, order):
+def order_plot(directory, num_runs, steps, exact_sol, interval, order):
     tau = np.array([])
     errors = np.array([])
-    for i in range(1,15):
+    for i in range(1,num_runs):
         file_name = directory+"vector_output_" + str(int(steps)) + ".csv"
         df = pd.read_csv(file_name, header=None)
 
@@ -32,11 +32,11 @@ def order_plot(directory, steps, exact_sol, interval, order):
         errors = np.append(errors, l2_error)
 
         steps = steps*2
-    # TODO: Add asteriks to the datapoints
     plt.loglog(tau, errors, '-*')
 
 # Explicit Euler method
 #order_plot(10, vector1_exact(1), 1-0, 1)
-#order_plot("./runs/Lambert1/", 10, Lambert_exact(1), 1-0, 1)
-order_plot("./runs/Lambert2/", 10, Lambert_exact(1), 1-0, 1)
+#order_plot("./runs/Lambert1/", 15, 10, Lambert_exact(1), 1-0, 1)
+order_plot("./runs/Lambert2/", 15, 10, Lambert_exact(1), 1-0, 1)
+#order_plot("./runs/Lambert2Exp/", 15, 10, Lambert_exact(1), 1-0, 1)
 plt.show()

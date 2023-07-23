@@ -1,3 +1,4 @@
+#include "Matrix.hpp"
 #include "TimeIntegration.hpp"
 #include "Vector.hpp"
 #include <cmath>
@@ -23,6 +24,13 @@ d_vector RHS_Lambert2(double t, d_vector y) {
     d_vector rhs(y.Size());
     rhs[0] = (-2)*y[0] + y[1] + 2*std::sin(t);
     rhs[1] = 998*y[0] + (-999)*y[1] + 999*(std::cos(t) - std::sin(t));
+    return rhs;
+}
+
+d_vector RHS_Lambert2_nonL(double t, d_vector y) {
+    d_vector rhs(y.Size());
+    rhs[0] = 2*std::sin(t);
+    rhs[1] = 999*(std::cos(t) - std::sin(t));
     return rhs;
 }
 
@@ -86,10 +94,21 @@ int main(int argc, char **argv) {
     d_vector y0Lam(2);
     y0Lam[0] = 2; y0Lam[1] = 3;
 
+    /*
     TimeIntegration<d_vector> Lambert;
     Lambert.Solve(ClassicalRK::Euler(), &RHS_Lambert2, h, y0Lam, t0, t1, steps);
 
 
     Lambert.save_simulation("vector_output.csv", steps);
+    */
+
+    Matrix<double> L(2,2);
+    L(0,0)=-2; L(0,1)=1;
+    L(1,0)=998; L(1,1)=-999;
+
+    TimeIntegration<d_vector> LambertExp;
+    LambertExp.Solve(ExponentialRK<Matrix<double>>::EEuler(L*(h)), &RHS_Lambert2_nonL, h, y0Lam, t0, t1, steps);
+
+    LambertExp.save_simulation("vector_output.csv", steps);
     return 0;
 }
