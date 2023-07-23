@@ -45,7 +45,7 @@ class Matrix
         // multiplication
         Matrix<DATA_TYPE> operator*(DATA_TYPE a) const;
         Matrix<DATA_TYPE> operator*(const Matrix<DATA_TYPE>& M) const;
-        Vector<DATA_TYPE> operator*(const Vector<DATA_TYPE>& v1) const;
+        Vector<DATA_TYPE> operator*(Vector<DATA_TYPE>& v1) const;
 
         // Overload both const and non-const version so we can use it
         // on a const this or equivalent referance.
@@ -234,7 +234,7 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(DATA_TYPE a) const
 
 
 template<typename DATA_TYPE>
-Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(const Vector<DATA_TYPE> &V) const
+Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
 {
     assert(mNumCols == V.Size());
     Vector<DATA_TYPE> W(mNumRows);
