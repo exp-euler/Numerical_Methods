@@ -3,6 +3,7 @@
 #ifndef TIMEINTEGRATION
 #define TIMEINTEGRATION
 
+#include "Matrix.hpp"
 #include "Tableaus.hpp"
 #include <fstream>
 #include <vector>
@@ -22,6 +23,9 @@ private:
     std::vector<double> T;
 public:
     void Solve(const ClassicalRK &tableau,
+               std::function<Y_TYPE(double, Y_TYPE)>F, double h,
+               Y_TYPE y0, double t0, double t1, int N);
+    void Solve(const ExponentialRK<Matrix<double>> &tableau,
                std::function<Y_TYPE(double, Y_TYPE)>F, double h,
                Y_TYPE y0, double t0, double t1, int N);
     // Return by constant reference to avoid both copying and editing.
@@ -77,7 +81,47 @@ void TimeIntegration<Y_TYPE>::Solve(const ClassicalRK &tableau,
 
         for(std::size_t j=0; j<tableau.b.size(); j++)
         {
-            y += tableau.b[j]*h*k[j];
+            y = tableau.e[j]*y + tableau.b[j]*h*k[j];
+        }
+        t += h;
+
+        Y.push_back(y);
+        T.push_back(t);
+    }
+
+}
+
+
+template<typename Y_TYPE>
+void TimeIntegration<Y_TYPE>::Solve(const ExponentialRK<Matrix<double>> &tableau,
+             std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
+             double t0, double t1, int N)
+{
+    Y.reserve(N);
+    T.reserve(N);
+
+    Y_TYPE y = y0;
+    double t = t0;
+    // Initialize here as work-around to be able to work with
+    // scalars and vectors at the same time.
+    Y_TYPE temp = y0;
+
+    for(int i=0; i<N; i++)
+    {
+        std::vector<Y_TYPE> k{F(t,y)};
+        for(std::size_t j=0; j<tableau.a.size(); j++)
+        {
+            temp = 0;
+            for(std::size_t m=0; m<tableau.a[j].size(); m++)
+            {
+                temp += tableau.a[j][m]*k[m];
+            }
+            k.push_back(F(t+tableau.c[j]*h, y + temp*h));
+        }
+
+        for(std::size_t j=0; j<tableau.b.size(); j++)
+        {
+            y = tableau.e[j]*y + tableau.b[j]*h*k[j];
         }
         t += h;
 
