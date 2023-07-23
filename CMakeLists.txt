@@ -74,6 +74,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src
 # where to find the library source files
 set(CPP_SOURCE
     "${PROJECT_SOURCE_DIR}/src/Tableaus.cpp"
+    "${PROJECT_SOURCE_DIR}/src/MatrixFunctions.cpp"
 )
 
 
