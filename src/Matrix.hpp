@@ -53,6 +53,9 @@ class Matrix
         const DATA_TYPE& operator()(int i, int j) const;
 
         Matrix<DATA_TYPE>& operator=(const Matrix<DATA_TYPE> &otherMatrix);
+
+        template<typename D_TYPE>
+        friend Matrix<D_TYPE> operator*(const D_TYPE scalar, const Matrix<D_TYPE>& M);
         template<typename D_TYPE>
         friend std::ostream& operator<<(std::ostream& output, Matrix<D_TYPE>& M);
 };
@@ -198,6 +201,22 @@ Matrix<DATA_TYPE>& Matrix<DATA_TYPE>::operator=(const Matrix<DATA_TYPE> &otherMa
         mData[i] = otherMatrix.mData[i];
     }
     return *this;
+}
+
+template<typename D_TYPE>
+Matrix<D_TYPE> operator*(const D_TYPE scalar, const Matrix<D_TYPE>& M)
+{
+
+    Matrix<D_TYPE> N(M.NumRows(), M.NumCols());
+
+    for(int i=0; i<M.NumRows(); i++)
+    {
+        for(int j=0; j<M.NumCols(); j++)
+        {
+            N(i,j)=M.mData[i*M.NumCols()+j] * scalar;
+        }
+    }
+    return N;
 }
 
 template<typename D_TYPE>
