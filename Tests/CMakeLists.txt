@@ -2,6 +2,7 @@
 if(CMAKE_BUILD_TYPE MATCHES Serial)
     add_executable(matFunTest ${CPP_SOURCE} ./matFunTest.cpp)
     add_executable(vectorIVP ${CPP_SOURCE} ./vectorIVP.cpp)
+    add_executable(Problem_6_2 ${CPP_SOURCE} ./Problem_6_2.cpp)
 endif(CMAKE_BUILD_TYPE MATCHES Serial)
 
 # next lines build mpi-openmp executables

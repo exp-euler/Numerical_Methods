@@ -14,6 +14,14 @@ def Lambert_exact(t):
     arr = np.array([sol0, sol1])
     return arr
 
+def P62sin_exact(t, Psize):
+    sol = np.array([])
+    dx = (1.0-0.0)/(Psize+1);
+    for i in range(0,Psize):
+        x = dx * (i+1);
+        sol = np.append(sol, 10*(1 - x)*x*(1+np.sin(t)) + 2)
+    return sol
+
 
 def order_plot(directory, num_runs, steps, exact_sol, interval, order):
     tau = np.array([])
@@ -37,6 +45,8 @@ def order_plot(directory, num_runs, steps, exact_sol, interval, order):
 # Explicit Euler method
 #order_plot(10, vector1_exact(1), 1-0, 1)
 #order_plot("./runs/Lambert1/", 15, 10, Lambert_exact(1), 1-0, 1)
-order_plot("./runs/Lambert2/", 15, 10, Lambert_exact(1), 1-0, 1)
+#order_plot("./runs/Lambert2/", 15, 10, Lambert_exact(1), 1-0, 4)
 #order_plot("./runs/Lambert2Exp/", 15, 10, Lambert_exact(1), 1-0, 1)
+order_plot("./runs/Problem_6_2_sin/", 11, 10, P62sin_exact(1,19), 1-0, 1)
+#print(P62sin_exact(0,19))
 plt.show()
