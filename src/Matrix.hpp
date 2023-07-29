@@ -22,6 +22,7 @@ class Matrix
         Matrix(const Matrix& otherMatrix);
         Matrix(int m, int n);
         static Matrix<DATA_TYPE> Diagonal(int m, int n, DATA_TYPE k);
+        static Matrix<DATA_TYPE> Laplacian121(int m);
         //~Matrix();
         int NumRows() const;
         int NumCols() const;
@@ -96,8 +97,32 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::Diagonal(int m, int n, DATA_TYPE k)
 {
     assert(m==n);
     Matrix<DATA_TYPE> D(m,n);
-    for(int i=0; i<m; i++)
-        D(i,i) = k;
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<n; j++) {
+            if(i==j)
+                D(i,j) = k;
+            else
+                D(i,j) = 0;
+        }
+    }
+    return D;
+}
+
+// Named constructor to give Laplacian matrix with 1 -2 1 stencil
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::Laplacian121(int m)
+{
+    Matrix<DATA_TYPE> D(m,m);
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<m; j++) {
+            if(i==j)
+                D(i,j) = -2;
+            else if((i==j+1) || (i==j-1))
+                D(i,j) = 1;
+            else 
+                D(i,j) = 0;
+        }
+    }
     return D;
 }
 

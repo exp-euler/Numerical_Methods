@@ -6,6 +6,7 @@
 #include "Matrix.hpp"
 #include "Tableaus.hpp"
 #include <fstream>
+#include <iomanip>
 #include <vector>
 #include <functional>
 #include <sys/stat.h>
@@ -123,7 +124,7 @@ void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name, int tau)
 
     // Write the data for each time-step taken.
     for(size_t i=0; i<Y.size(); i++) {
-        file_o << T[i] << "," << Y[i] << "\n";
+        file_o << std::setprecision(std::numeric_limits<double>::max_digits10) << T[i] << "," << Y[i] << "\n";
     }
 
     file_o.close();
