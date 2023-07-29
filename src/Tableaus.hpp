@@ -34,6 +34,7 @@ class ExponentialRK
     public:
     // Add more ERK methods as named constructors like below
     static ExponentialRK EEuler(DATA_TYPE L);
+    static ExponentialRK ERK32ZB(DATA_TYPE L);
 
     std::vector<double> c;
     // e is a vector with transformation factors.
@@ -78,5 +79,37 @@ ExponentialRK<DATA_TYPE> ExponentialRK<DATA_TYPE>::EEuler(DATA_TYPE L)
 
     return ExponentialRK(L, {},{phi[0]},{},{phi[1]});
 }
+
+template<typename DATA_TYPE>
+ExponentialRK<DATA_TYPE> ExponentialRK<DATA_TYPE>::ERK32ZB(DATA_TYPE L)
+{
+    int size_L = L.NumRows();
+    Matrix<double> phi00(size_L,size_L);
+    Matrix<double> phi10(size_L,size_L);
+    Matrix<double> phi20(size_L,size_L);
+    Matrix<double> phi01(size_L,size_L);
+    Matrix<double> phi11(size_L,size_L);
+    Matrix<double> phi21(size_L,size_L);
+    Matrix<double> phi0(size_L,size_L);
+    Matrix<double> phi1(size_L,size_L);
+    Matrix<double> phi2(size_L,size_L);
+    Matrix<double> phi3(size_L,size_L);
+
+    std::vector<DATA_TYPE> phi = {phi0, phi1, phi2, phi3};
+    std::vector<DATA_TYPE> phi_c0 = {phi00, phi10, phi20};
+    std::vector<DATA_TYPE> phi_c1 = {phi01, phi11, phi21};
+
+    LinearAlgebra::phi_functions(phi, 3, L);
+    LinearAlgebra::phi_functions(phi_c0, 2, L*0.5);
+    LinearAlgebra::phi_functions(phi_c1, 2, L*0.75);
+
+    return ExponentialRK(L,
+        {0.5, 0.75},
+        {phi_c0[0], phi_c1[0], phi[0]},
+        {{phi_c0[1]*0.5}, {phi_c1[1]*0.75 - phi_c1[2]*(9.0/8.0) - phi_c0[2]*(3.0/8.0), phi_c1[2]*(9.0/8.0) + phi_c0[2]*(3.0/8.0)}},
+        {phi[1] - phi[2]*0.75 + phi[3]*0.25 - phi[2]*(5.0/6.0) - phi[3]*(1.0/6), phi[2]*0.75 - phi[3]*0.25, phi[2]*(5.0/6.0) + phi[3]*(1.0/6)});
+}
+
+
 
 #endif //TABLEAUS
