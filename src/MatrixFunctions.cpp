@@ -26,7 +26,7 @@ namespace LinearAlgebra {
     // http://www.math.ntnu.no/preprint/numerics/2005/N4-2005.pdf
     for(int k=1; k <= j; ++k) {
         if(l >= 3)
-            phi[3] = (phi[1]*phi[2]+phi[3]*phi[1]+phi[2])*0.125;
+            phi[3] = (phi[1]*phi[2]+phi[3]*2+phi[2])*0.125;
         if(l >= 2)
             phi[2] = (phi[1]*phi[1]+phi[2]*2)*0.25;
         if(l >= 1)

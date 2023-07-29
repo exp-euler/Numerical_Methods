@@ -76,12 +76,13 @@ void TimeIntegration<Y_TYPE>::Solve(const TABLEAU &tableau,
             {
                 temp += tableau.a[j][m]*k[m];
             }
-            k.push_back(F(t+ h*tableau.c[j], y + h*temp));
+            k.push_back(F(t+ h*tableau.c[j], tableau.e[j]*y + h*temp));
         }
 
+        y = tableau.e[tableau.b.size()-1]*y;
         for(std::size_t j=0; j<tableau.b.size(); j++)
         {
-            y = tableau.e[j]*y + h*tableau.b[j]*k[j];
+            y = y + h*tableau.b[j]*k[j];
         }
         t += h;
 
