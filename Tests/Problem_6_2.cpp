@@ -29,10 +29,11 @@ d_vector RHS_P62_sin(double t, d_vector y) {
     double dx = (1.0-0.0)/(y.Size()+1);
     for(int i=0; i<y.Size(); i++) {
         x = dx * (i+1);
-        rhs[i] = 10*(1 - x)*x*(std::cos(t)) + 2*10*(1+std::sin(t)) - 1/(1+(x*(1-x)*(10+10*std::sin(t))+2) * (x*(1-x)*(10+10*std::sin(t))+2))
-        + 1/(1+y[i]*y[i]);
+        rhs[i] = 10*(1 - x)*x*(std::cos(t)) + 2*10*(1+std::sin(t)) - 1/(1+(x*(1-x)*(10+10*std::sin(t))+2) * (x*(1-x)*(10+10*std::sin(t))+2)) // Phi(x,t)
+        + 1/(1+y[i]*y[i]); // Fraction 1/(1+y^2)
     }
 
+    // Boundary condition modification specific to Laplacian 1 -2 1
     rhs[0] += (1/(dx*dx))*2; rhs[y.Size()-1] += (1/(dx*dx))*2;
 
     return rhs;
@@ -95,7 +96,7 @@ int main(int argc, char **argv) {
     double t1 = 1;
     double h=(t1-t0)/steps;
 
-    int Psize = 19;
+    int Psize = 199;
     d_vector y0P(exact_P62_sin(0, Psize));
 
     d_matrix L(Matrix<double>::Laplacian121(Psize));
@@ -103,7 +104,8 @@ int main(int argc, char **argv) {
     L = L * (-1) * (1/(dx*dx));
 
     TimeIntegration<d_vector> P_62_sin;
-    P_62_sin.Solve(ExponentialRK<d_matrix>::EEuler(L*(-h)), &RHS_P62_sin, h, y0P, t0, t1, steps);
+    //P_62_sin.Solve(ExponentialRK<d_matrix>::EEuler(L*(-h)), &RHS_P62_sin, h, y0P, t0, t1, steps);
+    P_62_sin.Solve(ExponentialRK<d_matrix>::ERK32ZB(L*(-h)), &RHS_P62_sin, h, y0P, t0, t1, steps);
     //P_62_sin.Solve(ClassicalRK::RK4(), &RHS_P62_sin_wL, h, y0P, t0, t1, steps);
 
     P_62_sin.save_simulation("vector_output.csv", steps);

@@ -47,6 +47,6 @@ def order_plot(directory, num_runs, steps, exact_sol, interval, order):
 #order_plot("./runs/Lambert1/", 15, 10, Lambert_exact(1), 1-0, 1)
 #order_plot("./runs/Lambert2/", 15, 10, Lambert_exact(1), 1-0, 4)
 #order_plot("./runs/Lambert2Exp/", 15, 10, Lambert_exact(1), 1-0, 1)
-order_plot("./runs/Problem_6_2_sin/", 11, 10, P62sin_exact(1,19), 1-0, 1)
+order_plot("./runs/Problem_6_2_sin/", 9, 10, P62sin_exact(1,199), 1-0, 3)
 #print(P62sin_exact(0,19))
 plt.show()
