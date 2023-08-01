@@ -5,13 +5,17 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 #                               Compiler Setup
 #########################################################################
 
-# 1. 'O3': enable all optimizations
-# 2. '-Wall': enable all warnings
-SET(CMAKE_CXX_FLAGS "-std=c++17 -g -O3 -Wall")
-
 IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Serial CACHE STRING "Choose the type of build: Serial SharedCPU DistCPU HybridCPU GPU" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
+
+# 1. 'O3': enable all optimizations
+# 2. '-Wall': enable all warnings
+if(CMAKE_BUILD_TYPE MATCHES GPU)
+    SET(CMAKE_CUDA_FLAGS "-std=c++17 -g -O3 -Wall")
+else()
+    SET(CMAKE_CXX_FLAGS "-std=c++17 -g -O3 -Wall")
+endif(CMAKE_BUILD_TYPE MATCHES GPU)
 
 # Export compile flags as a json file to be used by coc autocompleter
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -41,6 +45,7 @@ if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
 endif(CMAKE_BUILD_TYPE MATCHES HybridCPU)
 if(CMAKE_BUILD_TYPE MATCHES GPU)
     SET(CMAKE_CXX_COMPILER "nvcc")
+    find_package(CUDA REQUIRED)
     add_definitions(-DGPU)
 endif(CMAKE_BUILD_TYPE MATCHES GPU)
 
