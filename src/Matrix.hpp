@@ -259,8 +259,6 @@ std::ostream& operator<<(std::ostream& output, Matrix<D_TYPE>& M)
     return output; // return std::ostream so that we can have chain call of <<
 }
 
-#ifdef SERIAL
-
 template<typename DATA_TYPE>
 Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(DATA_TYPE a) const
 {
@@ -276,6 +274,97 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(DATA_TYPE a) const
     return N;
 }
 
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator+(const Matrix<DATA_TYPE> &M) const
+{
+    assert(mNumCols == M.mNumRows);
+    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
+
+    for(int i=0; i<N.mNumRows; i++)
+    {
+        for(int j=0; j<N.mNumCols; j++)
+        {
+            N(i,j)=mData[i*mNumCols+j] + M(i,j);
+        }
+    }
+    return N;
+}
+
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator-(const Matrix<DATA_TYPE> &M) const
+{
+    assert(mNumCols == M.mNumRows);
+    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
+
+    for(int i=0; i<N.mNumRows; i++)
+    {
+        for(int j=0; j<N.mNumCols; j++)
+        {
+            N(i,j)=mData[i*mNumCols+j] - M(i,j);
+        }
+    }
+    return N;
+}
+
+// ***************************************************************
+// ***************************************************************
+//
+//         Code that runs when compiled for single core CPU
+//
+// ***************************************************************
+// ***************************************************************
+
+#ifdef SERIAL
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
+{
+    assert(mNumCols == V.Size());
+    Vector<DATA_TYPE> W(mNumRows);
+    DATA_TYPE temp;
+
+    for(int i=0; i<mNumRows; i++)
+    {
+        temp = 0;
+        for(int j=0; j<mNumCols; j++)
+        {
+            temp += mData[i*mNumCols+j]*V[j];
+        }
+        W[i]=temp;
+    }
+    return W;
+}
+
+template<typename DATA_TYPE>
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(const Matrix<DATA_TYPE> &M) const
+{
+    assert(mNumCols == M.mNumRows);
+    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
+
+    for(int i=0; i<N.mNumRows; i++)
+    {
+        for(int j=0; j<N.mNumCols; j++)
+        {
+            N(i,j)=0;
+            for(int k=0; k<mNumCols; k++)
+            {
+                N(i,j) += mData[i*mNumCols+k]*M(k,j);
+            }
+        }
+    }
+    return N;
+}
+#endif
+
+// ***************************************************************
+// ***************************************************************
+//
+//              Code that runs when compiled for GPU
+//
+// ***************************************************************
+// ***************************************************************
+
+#ifdef GPU
 
 template<typename DATA_TYPE>
 Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
@@ -316,40 +405,15 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(const Matrix<DATA_TYPE> &M) const
     return N;
 }
 
-template<typename DATA_TYPE>
-Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator+(const Matrix<DATA_TYPE> &M) const
-{
-    assert(mNumCols == M.mNumRows);
-    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
-
-    for(int i=0; i<N.mNumRows; i++)
-    {
-        for(int j=0; j<N.mNumCols; j++)
-        {
-            N(i,j)=mData[i*mNumCols+j] + M(i,j);
-        }
-    }
-    return N;
-}
-
-template<typename DATA_TYPE>
-Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator-(const Matrix<DATA_TYPE> &M) const
-{
-    assert(mNumCols == M.mNumRows);
-    Matrix<DATA_TYPE> N(mNumRows, M.mNumCols);
-
-    for(int i=0; i<N.mNumRows; i++)
-    {
-        for(int j=0; j<N.mNumCols; j++)
-        {
-            N(i,j)=mData[i*mNumCols+j] - M(i,j);
-        }
-    }
-    return N;
-}
-
-
 #endif
+
+// ***************************************************************
+// ***************************************************************
+//
+//       Code that runs when compiled for CPU hybrid paradigm
+//
+// ***************************************************************
+// ***************************************************************
 
 #ifdef HYBRID_CPU
 template<typename DATA_TYPE>
