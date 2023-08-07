@@ -9,7 +9,7 @@ on:
 jobs:
   serial:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3
@@ -25,7 +25,7 @@ jobs:
 
   GPU:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3
