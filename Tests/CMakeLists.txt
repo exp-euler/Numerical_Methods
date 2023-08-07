@@ -5,6 +5,12 @@ if(CMAKE_BUILD_TYPE MATCHES Serial)
     add_executable(Problem_6_2 ${CPP_SOURCE} ./Problem_6_2.cpp)
 endif(CMAKE_BUILD_TYPE MATCHES Serial)
 
+# next lines build GPU executables
+if(CMAKE_BUILD_TYPE MATCHES GPU)
+    add_executable(matFunTest ${CPP_SOURCE} ./matFunTest.cpp)
+    cuda_add_executable(CUmatFunTest ${CPP_SOURCE} ./CUmatFunTest.cu)
+endif(CMAKE_BUILD_TYPE MATCHES GPU)
+
 # next lines build mpi-openmp executables
 if(CMAKE_BUILD_TYPE MATCHES HybridCPU)
     add_executable(matrixTest ${CPP_SOURCE} ./matrixTest.cpp)
