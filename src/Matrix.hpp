@@ -160,7 +160,7 @@ DATA_TYPE Matrix<DATA_TYPE>::inf_norm() const
 template<typename DATA_TYPE>
 Vector<DATA_TYPE> Matrix<DATA_TYPE>::SerialMV(Vector<DATA_TYPE> &V)
 {
-    assert(mNumCols == V.Size());
+    assert(mNumCols == V.size());
     Vector<DATA_TYPE> W(mNumRows);
     DATA_TYPE temp;
 
@@ -319,7 +319,7 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator-(const Matrix<DATA_TYPE> &M) const
 template<typename DATA_TYPE>
 Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
 {
-    assert(mNumCols == V.Size());
+    assert(mNumCols == V.size());
     Vector<DATA_TYPE> W(mNumRows);
     DATA_TYPE temp;
 
@@ -369,7 +369,7 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::operator*(const Matrix<DATA_TYPE> &M) const
 template<typename DATA_TYPE>
 Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
 {
-    assert(mNumCols == V.Size());
+    assert(mNumCols == V.size());
     Vector<DATA_TYPE> W(mNumRows);
     DATA_TYPE temp;
 
@@ -441,7 +441,7 @@ Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &v) const
     Vector<DATA_TYPE> w(mNumRows);
 
     // Bcast the full vector v1
-    MPI_Bcast(&v.front(), v.Size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&v.front(), v.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     /*         Load balancing of scattering of matrix M             */
     int *pSendInd; // Index of first data element sent to a proc via Scatterv
@@ -481,7 +481,7 @@ Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &v) const
         std::cout << ProcRows << std::endl;
     }
     */
-    for(int i=0; i<ProcRes.Size(); i++)
+    for(int i=0; i<ProcRes.size(); i++)
     {
         for(int j=0; j<mNumCols; j++)
         {

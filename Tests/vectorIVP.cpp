@@ -7,28 +7,28 @@ typedef Vector<double> d_vector;
 typedef Matrix<double> d_matrix;
 
 d_vector RHS(double t, d_vector y) {
-    d_vector rhs(y.Size());
+    d_vector rhs(y.size());
     rhs(0) = y(0) + 2*y(1);
     rhs(1) = 3*y(0) + 2*y(1);
     return rhs;
 }
 
 d_vector RHS_Lambert1(double t, d_vector y) {
-    d_vector rhs(y.Size());
+    d_vector rhs(y.size());
     rhs(0) = (-2)*y(0) + y(1) + 2*std::sin(t);
     rhs(1) = y(0) + (-2)*y(1) + 2*(std::cos(t) - std::sin(t));
     return rhs;
 }
 
 d_vector RHS_Lambert2(double t, d_vector y) {
-    d_vector rhs(y.Size());
+    d_vector rhs(y.size());
     rhs(0) = (-2)*y(0) + y(1) + 2*std::sin(t);
     rhs(1) = 998*y(0) + (-999)*y(1) + 999*(std::cos(t) - std::sin(t));
     return rhs;
 }
 
 d_vector RHS_Lambert2_nonL(double t, d_vector y) {
-    d_vector rhs(y.Size());
+    d_vector rhs(y.size());
     rhs(0) = 2*std::sin(t);
     rhs(1) = 999*(std::cos(t) - std::sin(t));
     return rhs;

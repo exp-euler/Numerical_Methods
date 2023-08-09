@@ -15,7 +15,7 @@ class Vector
         Vector(const Vector<DATA_TYPE>& otherVector);
         Vector(int size);
         //~Vector();
-        int Size() const;
+        int size() const;
         DATA_TYPE& front();
         DATA_TYPE& operator()(int i);
         Vector<DATA_TYPE>& operator=(const Vector<DATA_TYPE>& otherVector);
@@ -47,7 +47,7 @@ class Vector
 template<typename DATA_TYPE>
 Vector<DATA_TYPE>::Vector(const Vector<DATA_TYPE>& otherVector)
 {
-    mSize = otherVector.Size();
+    mSize = otherVector.size();
     // Copying vectors using the std::vector assignment
     mData = otherVector.mData;
 }
@@ -63,7 +63,7 @@ Vector<DATA_TYPE>::Vector(int size)
 }
 
 template<typename DATA_TYPE>
-int Vector<DATA_TYPE>::Size() const
+int Vector<DATA_TYPE>::size() const
 {
     return mSize;
 }
@@ -201,7 +201,7 @@ std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v)
     // Format for when outputting to console
     if(&output == &std::cout){
         output << std::endl;
-        for(int i=0; i<v.Size(); i++)
+        for(int i=0; i<v.size(); i++)
         {
             std::cout << v(i) << std::endl;
         }
@@ -209,7 +209,7 @@ std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v)
     }
 
     // Format for when outputting to csv file
-    for(int i=0; i<v.Size(); i++)
+    for(int i=0; i<v.size(); i++)
     {
         output << v(i) << ",";
     }

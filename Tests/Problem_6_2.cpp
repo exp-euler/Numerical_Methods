@@ -23,36 +23,36 @@ d_vector exact_P62_sin(double t, int Psize) {
 }
 
 d_vector RHS_P62_sin(double t, d_vector y) {
-    d_vector rhs(y.Size());
+    d_vector rhs(y.size());
 
     double x;
-    double dx = (1.0-0.0)/(y.Size()+1);
-    for(int i=0; i<y.Size(); i++) {
+    double dx = (1.0-0.0)/(y.size()+1);
+    for(int i=0; i<y.size(); i++) {
         x = dx * (i+1);
         rhs(i) = 10*(1 - x)*x*(std::cos(t)) + 2*10*(1+std::sin(t)) - 1/(1+(x*(1-x)*(10+10*std::sin(t))+2) * (x*(1-x)*(10+10*std::sin(t))+2)) // Phi(x,t)
         + 1/(1+y(i)*y(i)); // Fraction 1/(1+y^2)
     }
 
     // Boundary condition modification specific to Laplacian 1 -2 1
-    rhs(0) += (1/(dx*dx))*2; rhs(y.Size()-1) += (1/(dx*dx))*2;
+    rhs(0) += (1/(dx*dx))*2; rhs(y.size()-1) += (1/(dx*dx))*2;
 
     return rhs;
 }
 
 d_vector RHS_P62_sin_wL(double t, d_vector y) {
-    d_vector rhs(y.Size());
+    d_vector rhs(y.size());
 
     double x;
-    double dx = (1.0-0.0)/(y.Size()+1);
-    for(int i=0; i<y.Size(); i++) {
+    double dx = (1.0-0.0)/(y.size()+1);
+    for(int i=0; i<y.size(); i++) {
         x = dx * (i+1);
         rhs(i) = 10*(1 - x)*x*(std::cos(t)) + 2*10*(1+std::sin(t)) - 1/(1+(x*(1-x)*(10+10*std::sin(t))+2) * (x*(1-x)*(10+10*std::sin(t))+2))
         + 1/(1+y(i)*y(i));
     }
 
-    rhs(0) += (1/(dx*dx))*2; rhs(y.Size()-1) += (1/(dx*dx))*2;
+    rhs(0) += (1/(dx*dx))*2; rhs(y.size()-1) += (1/(dx*dx))*2;
 
-    d_matrix L(Matrix<double>::Laplacian121(y.Size()));
+    d_matrix L(Matrix<double>::Laplacian121(y.size()));
     L = L * (1/(dx*dx));
 
     rhs = rhs  - L*y;
