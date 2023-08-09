@@ -328,9 +328,9 @@ Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
         temp = 0;
         for(int j=0; j<mNumCols; j++)
         {
-            temp += mData[i*mNumCols+j]*V[j];
+            temp += mData[i*mNumCols+j]*V(j);
         }
-        W[i]=temp;
+        W(i)=temp;
     }
     return W;
 }
@@ -378,9 +378,9 @@ Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &V) const
         temp = 0;
         for(int j=0; j<mNumCols; j++)
         {
-            temp += mData[i*mNumCols+j]*V[j];
+            temp += mData[i*mNumCols+j]*V(j);
         }
-        W[i]=temp;
+        W(i)=temp;
     }
     return W;
 }
@@ -485,7 +485,7 @@ Vector<DATA_TYPE> Matrix<DATA_TYPE>::operator*(Vector<DATA_TYPE> &v) const
     {
         for(int j=0; j<mNumCols; j++)
         {
-            ProcRes[i] += ProcRows(i,j)*v[j];
+            ProcRes(i) += ProcRows(i,j)*v(j);
         }
     }
     // Testing if the parallel multiplication is correct

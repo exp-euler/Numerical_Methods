@@ -17,7 +17,7 @@ class Vector
         //~Vector();
         int Size() const;
         DATA_TYPE& front();
-        DATA_TYPE& operator[](int i);
+        DATA_TYPE& operator()(int i);
         Vector<DATA_TYPE>& operator=(const Vector<DATA_TYPE>& otherVector);
         // TODO: Instead of double, use a template here.
         Vector<DATA_TYPE>& operator=(double a);
@@ -75,7 +75,7 @@ DATA_TYPE& Vector<DATA_TYPE>::front()
 }
 
 template<typename DATA_TYPE>
-DATA_TYPE& Vector<DATA_TYPE>::operator[](int i)
+DATA_TYPE& Vector<DATA_TYPE>::operator()(int i)
 {
     assert(i > -1);
     assert(i < mSize);
@@ -203,7 +203,7 @@ std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v)
         output << std::endl;
         for(int i=0; i<v.Size(); i++)
         {
-            std::cout << v[i] << std::endl;
+            std::cout << v(i) << std::endl;
         }
         return output; // return std::ostream so that we can have chain call of <<
     }
@@ -211,7 +211,7 @@ std::ostream& operator<<(std::ostream& output, Vector<D_TYPE>& v)
     // Format for when outputting to csv file
     for(int i=0; i<v.Size(); i++)
     {
-        output << v[i] << ",";
+        output << v(i) << ",";
     }
     return output; // return std::ostream so that we can have chain call of <<
 }
