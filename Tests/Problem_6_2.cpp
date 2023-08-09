@@ -1,12 +1,39 @@
-#include "Matrix.hpp"
 #include "Tableaus.hpp"
 #include "TimeIntegration.hpp"
-#include "Vector.hpp"
 #include <cmath>
 #include <getopt.h>
 
+#ifdef EIGEN_YES
+
+#include <Eigen/Dense>
+typedef Eigen::VectorXd d_vector;
+typedef Eigen::MatrixXd d_matrix;
+
+#else
+
+#include "Matrix.hpp"
+#include "Vector.hpp"
 typedef Vector<double> d_vector;
 typedef Matrix<double> d_matrix;
+
+#endif
+
+
+//TODO: Check that only square matrices are passed.
+void Laplacian121(d_matrix &D)
+{
+    for(int i=0; i<D.rows(); i++) {
+        for(int j=0; j<D.cols(); j++) {
+            if(i==j)
+                D(i,j) = -2;
+            else if((i==j+1) || (i==j-1))
+                D(i,j) = 1;
+            else 
+                D(i,j) = 0;
+        }
+    }
+}
+
 
 // TODO: diffusion coefficient currently taken to be K=1
 d_vector exact_P62_sin(double t, int Psize) {
@@ -52,7 +79,8 @@ d_vector RHS_P62_sin_wL(double t, d_vector y) {
 
     rhs(0) += (1/(dx*dx))*2; rhs(y.size()-1) += (1/(dx*dx))*2;
 
-    d_matrix L(Matrix<double>::Laplacian121(y.size()));
+    d_matrix L(y.size(), y.size());
+    Laplacian121(L);
     L = L * (1/(dx*dx));
 
     rhs = rhs  - L*y;
@@ -99,7 +127,8 @@ int main(int argc, char **argv) {
     int Psize = 199;
     d_vector y0P(exact_P62_sin(0, Psize));
 
-    d_matrix L(Matrix<double>::Laplacian121(Psize));
+    d_matrix L(Psize, Psize);
+    Laplacian121(L);
     double dx = (1.0-0.0)/(Psize+1);
     L = L * (-1) * (1/(dx*dx));
 

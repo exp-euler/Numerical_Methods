@@ -1,10 +1,22 @@
 #include "MatrixFunctions.hpp"
 
+#ifdef EIGEN_YES
+
+#include <Eigen/Dense>
+typedef Eigen::MatrixXd matrix;
+
+#else
+
+#include "Matrix.hpp"
 typedef Matrix<double> matrix;
+
+#endif
+
+
 namespace LinearAlgebra {
     void Taylor(matrix &T, matrix &L, int k) {
         std::vector<double> coeff = {1.0, 1.0, 0.5, 1.0/6.0, 1.0/24.0, 1.0/120.0, 1.0/720.0, 1.0/5040.0, 1.0/40320.0, 1.0/362880.0, 1.0/3628800.0};
-        matrix temp(matrix::Diagonal(L.NumRows(), L.NumCols(), 1.0));
+        matrix temp(matrix::Identity(L.rows(), L.cols()));
         T = temp*coeff[0];
         for(int i=1; i<=k; i++) {
             temp = temp*L;
@@ -13,7 +25,8 @@ namespace LinearAlgebra {
     }
 
     int scale(matrix &A) {
-    double normA = A.inf_norm();
+    //TODO: Include the norm calculation in this file?
+    double normA = 1; //A.inf_norm();
     int j = normA > 0 ? 1+round(log(normA/4)/log(2)) : 0;
     return j >= 0 ? j : 0;
     }

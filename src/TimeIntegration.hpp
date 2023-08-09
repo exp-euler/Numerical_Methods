@@ -64,19 +64,19 @@ void TimeIntegration<Y_TYPE>::Solve(const TABLEAU &tableau,
     double t = t0;
     // Initialize here as work-around to be able to work with
     // scalars and vectors at the same time.
-    Y_TYPE temp = y0;
+    Y_TYPE intermediate_y = y0;
 
     for(int i=0; i<N; i++)
     {
         std::vector<Y_TYPE> k{F(t,y)};
         for(std::size_t j=0; j<tableau.a.size(); j++)
         {
-            temp = 0;
+            intermediate_y = tableau.e[j]*y;
             for(std::size_t m=0; m<tableau.a[j].size(); m++)
             {
-                temp += tableau.a[j][m]*k[m];
+                intermediate_y += h*tableau.a[j][m]*k[m];
             }
-            k.push_back(F(t+ h*tableau.c[j], tableau.e[j]*y + h*temp));
+            k.push_back(F(t+ h*tableau.c[j],  intermediate_y));
         }
 
         y = tableau.e[tableau.b.size()-1]*y;

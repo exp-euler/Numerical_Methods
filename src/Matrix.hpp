@@ -21,11 +21,11 @@ class Matrix
     public:
         Matrix(const Matrix& otherMatrix);
         Matrix(int m, int n);
-        static Matrix<DATA_TYPE> Diagonal(int m, int n, DATA_TYPE k);
+        static Matrix<DATA_TYPE> Identity(int m, int n);
         static Matrix<DATA_TYPE> Laplacian121(int m);
         //~Matrix();
-        int NumRows() const;
-        int NumCols() const;
+        int rows() const;
+        int cols() const;
 
         // The following is used in the MPI part of this file
         // TODO: Do this step in a different way
@@ -93,14 +93,14 @@ Matrix<DATA_TYPE>::Matrix(int m, int n)
 
 // Named constructor to give identity matrix
 template<typename DATA_TYPE>
-Matrix<DATA_TYPE> Matrix<DATA_TYPE>::Diagonal(int m, int n, DATA_TYPE k)
+Matrix<DATA_TYPE> Matrix<DATA_TYPE>::Identity(int m, int n)
 {
     assert(m==n);
     Matrix<DATA_TYPE> D(m,n);
     for(int i=0; i<m; i++) {
         for(int j=0; j<n; j++) {
             if(i==j)
-                D(i,j) = k;
+                D(i,j) = 1;
             else
                 D(i,j) = 0;
         }
@@ -127,13 +127,13 @@ Matrix<DATA_TYPE> Matrix<DATA_TYPE>::Laplacian121(int m)
 }
 
 template<typename DATA_TYPE>
-int Matrix<DATA_TYPE>::NumRows() const
+int Matrix<DATA_TYPE>::rows() const
 {
     return mNumRows;
 }
 
 template<typename DATA_TYPE>
-int Matrix<DATA_TYPE>::NumCols() const
+int Matrix<DATA_TYPE>::cols() const
 {
     return mNumCols;
 }
@@ -232,13 +232,13 @@ template<typename D_TYPE>
 Matrix<D_TYPE> operator*(const D_TYPE scalar, const Matrix<D_TYPE>& M)
 {
 
-    Matrix<D_TYPE> N(M.NumRows(), M.NumCols());
+    Matrix<D_TYPE> N(M.rows(), M.cols());
 
-    for(int i=0; i<M.NumRows(); i++)
+    for(int i=0; i<M.rows(); i++)
     {
-        for(int j=0; j<M.NumCols(); j++)
+        for(int j=0; j<M.cols(); j++)
         {
-            N(i,j)=M.mData[i*M.NumCols()+j] * scalar;
+            N(i,j)=M.mData[i*M.cols()+j] * scalar;
         }
     }
     return N;
@@ -248,9 +248,9 @@ template<typename D_TYPE>
 std::ostream& operator<<(std::ostream& output, Matrix<D_TYPE>& M)
 {
     output << std::endl;
-    for(int i=0; i<M.NumRows(); i++)
+    for(int i=0; i<M.rows(); i++)
     {
-        for(int j=0; j<M.NumCols();j++)
+        for(int j=0; j<M.cols();j++)
         {
             std::cout << M(i,j) << " ";
         }

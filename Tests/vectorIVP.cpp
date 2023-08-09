@@ -1,10 +1,21 @@
 #include "TimeIntegration.hpp"
 #include <cmath>
 #include <getopt.h>
+
+#ifdef EIGEN_YES
+
+#include <Eigen/Dense>
+typedef Eigen::VectorXd d_vector;
+typedef Eigen::MatrixXd d_matrix;
+
+#else
+
 #include "Matrix.hpp"
 #include "Vector.hpp"
 typedef Vector<double> d_vector;
 typedef Matrix<double> d_matrix;
+
+#endif
 
 d_vector RHS(double t, d_vector y) {
     d_vector rhs(y.size());

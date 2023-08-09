@@ -28,33 +28,33 @@ class ClassicalRK
                 std::vector<double> weightsHigher);
 };
 
-template<typename DATA_TYPE>
+template<typename WEIGHTS_TYPE>
 class ExponentialRK
 {
     public:
     // Add more ERK methods as named constructors like below
-    static ExponentialRK EEuler(DATA_TYPE L);
-    static ExponentialRK ERK32ZB(DATA_TYPE L);
+    static ExponentialRK EEuler(WEIGHTS_TYPE L);
+    static ExponentialRK ERK32ZB(WEIGHTS_TYPE L);
 
     std::vector<double> c;
     // e is a vector with transformation factors.
-    std::vector<DATA_TYPE> e; // In case of ERK it is exp(-c*L*h)
-    std::vector<std::vector<DATA_TYPE>> a;
-    std::vector<DATA_TYPE> b;
+    std::vector<WEIGHTS_TYPE> e; // In case of ERK it is exp(-c*L*h)
+    std::vector<std::vector<WEIGHTS_TYPE>> a;
+    std::vector<WEIGHTS_TYPE> b;
 
-    ExponentialRK(DATA_TYPE L,
+    ExponentialRK(WEIGHTS_TYPE L,
                   std::vector<double> steps,
-                  std::vector<DATA_TYPE> t_factors,
-                  std::vector<std::vector<DATA_TYPE>> weights,
-                  std::vector<DATA_TYPE> weightsHigher);
+                  std::vector<WEIGHTS_TYPE> t_factors,
+                  std::vector<std::vector<WEIGHTS_TYPE>> weights,
+                  std::vector<WEIGHTS_TYPE> weightsHigher);
 };
 
-template<typename DATA_TYPE>
-ExponentialRK<DATA_TYPE>::ExponentialRK( DATA_TYPE L,
+template<typename WEIGHTS_TYPE>
+ExponentialRK<WEIGHTS_TYPE>::ExponentialRK( WEIGHTS_TYPE L,
              std::vector<double> steps,
-             std::vector<DATA_TYPE> t_factors,
-             std::vector<std::vector<DATA_TYPE>> weights,
-             std::vector<DATA_TYPE> weightsHigher)
+             std::vector<WEIGHTS_TYPE> t_factors,
+             std::vector<std::vector<WEIGHTS_TYPE>> weights,
+             std::vector<WEIGHTS_TYPE> weightsHigher)
 {
     c.reserve(steps.size());
     e.reserve(t_factors.size());
@@ -67,37 +67,37 @@ ExponentialRK<DATA_TYPE>::ExponentialRK( DATA_TYPE L,
     b = weightsHigher;
 }
 
-template<typename DATA_TYPE>
-ExponentialRK<DATA_TYPE> ExponentialRK<DATA_TYPE>::EEuler(DATA_TYPE L)
+template<typename WEIGHTS_TYPE>
+ExponentialRK<WEIGHTS_TYPE> ExponentialRK<WEIGHTS_TYPE>::EEuler(WEIGHTS_TYPE L)
 {
-    int size_L = L.NumRows();
-    Matrix<double> phi0(size_L,size_L);
-    Matrix<double> phi1(size_L,size_L);
-    std::vector<DATA_TYPE> phi = {phi0, phi1};
+    int size_L = L.rows();
+    WEIGHTS_TYPE phi0(size_L,size_L);
+    WEIGHTS_TYPE phi1(size_L,size_L);
+    std::vector<WEIGHTS_TYPE> phi = {phi0, phi1};
 
     LinearAlgebra::phi_functions(phi, 1, L);
 
     return ExponentialRK(L, {},{phi[0]},{},{phi[1]});
 }
 
-template<typename DATA_TYPE>
-ExponentialRK<DATA_TYPE> ExponentialRK<DATA_TYPE>::ERK32ZB(DATA_TYPE L)
+template<typename WEIGHTS_TYPE>
+ExponentialRK<WEIGHTS_TYPE> ExponentialRK<WEIGHTS_TYPE>::ERK32ZB(WEIGHTS_TYPE L)
 {
-    int size_L = L.NumRows();
-    Matrix<double> phi00(size_L,size_L);
-    Matrix<double> phi10(size_L,size_L);
-    Matrix<double> phi20(size_L,size_L);
-    Matrix<double> phi01(size_L,size_L);
-    Matrix<double> phi11(size_L,size_L);
-    Matrix<double> phi21(size_L,size_L);
-    Matrix<double> phi0(size_L,size_L);
-    Matrix<double> phi1(size_L,size_L);
-    Matrix<double> phi2(size_L,size_L);
-    Matrix<double> phi3(size_L,size_L);
+    int size_L = L.rows();
+    WEIGHTS_TYPE phi00(size_L,size_L);
+    WEIGHTS_TYPE phi10(size_L,size_L);
+    WEIGHTS_TYPE phi20(size_L,size_L);
+    WEIGHTS_TYPE phi01(size_L,size_L);
+    WEIGHTS_TYPE phi11(size_L,size_L);
+    WEIGHTS_TYPE phi21(size_L,size_L);
+    WEIGHTS_TYPE phi0(size_L,size_L);
+    WEIGHTS_TYPE phi1(size_L,size_L);
+    WEIGHTS_TYPE phi2(size_L,size_L);
+    WEIGHTS_TYPE phi3(size_L,size_L);
 
-    std::vector<DATA_TYPE> phi = {phi0, phi1, phi2, phi3};
-    std::vector<DATA_TYPE> phi_c0 = {phi00, phi10, phi20};
-    std::vector<DATA_TYPE> phi_c1 = {phi01, phi11, phi21};
+    std::vector<WEIGHTS_TYPE> phi = {phi0, phi1, phi2, phi3};
+    std::vector<WEIGHTS_TYPE> phi_c0 = {phi00, phi10, phi20};
+    std::vector<WEIGHTS_TYPE> phi_c1 = {phi01, phi11, phi21};
 
     LinearAlgebra::phi_functions(phi, 3, L);
     LinearAlgebra::phi_functions(phi_c0, 2, L*0.5);

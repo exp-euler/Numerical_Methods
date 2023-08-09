@@ -1,11 +1,21 @@
 #ifndef MATRIXFUNCTIONS
 #define MATRIXFUNCTIONS
-#include "Matrix.hpp"
 #include <vector>
 #include <cassert>
 #include <bits/stdc++.h>
+#ifdef EIGEN_YES
 
+#include <Eigen/Dense>
+typedef Eigen::MatrixXd matrix;
+
+#else
+
+#include "Matrix.hpp"
 typedef Matrix<double> matrix;
+
+#endif
+
+
 namespace LinearAlgebra {
     void Taylor(matrix &T, matrix &L, int k);
 
