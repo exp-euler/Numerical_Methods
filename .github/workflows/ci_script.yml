@@ -10,37 +10,45 @@ jobs:
   serial-no_eigen:
 
     runs-on: self-hosted
-    working-directory: ${{github.workspace}}
 
     steps:
     - uses: actions/checkout@v3
     - name: configure
+      working-directory: ${{github.workspace}}
       run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Serial ../
     - name: make
+      working-directory: ${{github.workspace}}/build
       run: make
     - name: scalarIVP
+      working-directory: ${{github.workspace}}/build
       run: ./bin/scalarIVP
     - name: vectorIVP
+      working-directory: ${{github.workspace}}/build
       run: ./bin/vectorIVP -N 10
     - name: Problem_6_2
+      working-directory: ${{github.workspace}}/build
       run: ./bin/Problem_6_2 -N 10
 
   serial-yes_eigen:
 
     runs-on: self-hosted
-    working-directory: ${{github.workspace}}/build
 
     steps:
     - uses: actions/checkout@v3
     - name: configure
+      working-directory: ${{github.workspace}}
       run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Serial -DUSE_EIGEN=YES ../
     - name: make
+      working-directory: ${{github.workspace}}/build
       run: make
     - name: scalarIVP
+      working-directory: ${{github.workspace}}/build
       run: ./bin/scalarIVP
     - name: vectorIVP
+      working-directory: ${{github.workspace}}/build
       run: ./bin/vectorIVP -N 10
     - name: Problem_6_2
+      working-directory: ${{github.workspace}}/build
       run: ./bin/Problem_6_2 -N 10
 
   GPU:
