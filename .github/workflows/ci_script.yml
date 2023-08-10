@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  serial:
+  serial-no_eigen:
 
     runs-on: self-hosted
 
@@ -22,6 +22,26 @@ jobs:
     - name: test
       working-directory: ${{github.workspace}}/build
       run: ./bin/scalarIVP
+      run: ./bin/vectorIVP -N 10
+      run: ./bin/Problem_6_2 -N 10
+
+  serial-yes_eigen:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: configure
+      working-directory: ${{github.workspace}}
+      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Serial -DUSE_EIGEN=YES ../
+    - name: make
+      working-directory: ${{github.workspace}}/build
+      run: make
+    - name: test
+      working-directory: ${{github.workspace}}/build
+      run: ./bin/scalarIVP
+      run: ./bin/vectorIVP -N 10
+      run: ./bin/Problem_6_2 -N 10
 
   GPU:
 
