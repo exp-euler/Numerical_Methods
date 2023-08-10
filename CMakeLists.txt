@@ -9,6 +9,10 @@ IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Serial CACHE STRING "Choose the type of build: Serial SharedCPU DistCPU HybridCPU GPU" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+IF(NOT USE_EIGEN)
+    SET(USE_EIGEN NO CACHE STRING "Choose whether you want to compile with Eigen library: YES NO" FORCE)
+ENDIF(NOT USE_EIGEN)
+
 # 1. 'O3': enable all optimizations
 # 2. '-Wall': enable all warnings
 if(CMAKE_BUILD_TYPE MATCHES GPU)
@@ -71,6 +75,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 #########################################################################
 #                       Source Files and Header Files
 #########################################################################
+
+# Eigen library
+if(USE_EIGEN MATCHES YES)
+    if(APPLE)
+        set(EIGEN3_INCLUDE_DIR /opt/local/include/eigen3/)
+    else(APPLE)
+        set(EIGEN3_INCLUDE_DIR /usr/include/eigen3/)
+    endif(APPLE)
+    
+    include_directories(${EIGEN3_INCLUDE_DIR})
+    add_definitions(-DEIGEN_YES)
+endif(USE_EIGEN MATCHES YES)
 
 # where to find the header files
 include_directories(${PROJECT_SOURCE_DIR}/src
