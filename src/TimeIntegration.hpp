@@ -11,6 +11,21 @@
 #include <functional>
 #include <sys/stat.h>
 
+#ifdef EIGEN_YES
+
+#include <Eigen/Dense>
+typedef Eigen::VectorXd d_vector;
+typedef Eigen::MatrixXd d_matrix;
+
+#else
+
+#include "Matrix.hpp"
+#include "Vector.hpp"
+typedef Vector<double> d_vector;
+typedef Matrix<double> d_matrix;
+
+#endif
+
 // Provides a function to solve the ODE and stores the approximated
 // solution in Y as well as the timesteps T.
 
@@ -22,9 +37,17 @@ class TimeIntegration
 private:
     std::vector<Y_TYPE> Y;
     std::vector<double> T;
+
+    // TODO: Find a better way to do this!
+    double mult(double &a, double &b);
+    d_vector mult(d_vector &D, d_vector &V);
+    d_vector mult(d_matrix &M, d_vector &V);
+
+    void file_stream(std::ofstream &file_o, d_vector &placeholder);
+    void file_stream(std::ofstream &file_o, double placeholder);
 public:
     template<typename TABLEAU>
-    void Solve(const TABLEAU &tableau,
+    void Solve(TABLEAU tableau,
                std::function<Y_TYPE(double, Y_TYPE)>F, double h,
                Y_TYPE y0, double t0, double t1, int N);
     // Return by constant reference to avoid both copying and editing.
@@ -40,6 +63,21 @@ public:
 // ###################################################################
 // ###################################################################
 
+template<typename Y_TYPE>
+double TimeIntegration<Y_TYPE>::mult(double &a, double &b) {
+    return a*b;
+}
+
+template<typename Y_TYPE>
+d_vector TimeIntegration<Y_TYPE>::mult(d_vector &D, d_vector &V) {
+    return D.cwiseProduct(V);
+}
+
+template<typename Y_TYPE>
+d_vector TimeIntegration<Y_TYPE>::mult(d_matrix &M, d_vector &V) {
+    return M*V;
+}
+
 // Solver function that allows the user to specify:
 //      the method by              tableau
 //      the right hand side by     F
@@ -53,7 +91,7 @@ public:
 // specified in the README file.
 template<typename Y_TYPE>
 template<typename TABLEAU>
-void TimeIntegration<Y_TYPE>::Solve(const TABLEAU &tableau,
+void TimeIntegration<Y_TYPE>::Solve(TABLEAU tableau,
              std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
              double t0, double t1, int N)
 {
@@ -71,18 +109,18 @@ void TimeIntegration<Y_TYPE>::Solve(const TABLEAU &tableau,
         std::vector<Y_TYPE> k{F(t,y)};
         for(std::size_t j=0; j<tableau.a.size(); j++)
         {
-            intermediate_y = tableau.e[j]*y;
+            intermediate_y = mult(tableau.e[j], y);
             for(std::size_t m=0; m<tableau.a[j].size(); m++)
             {
-                intermediate_y += h*tableau.a[j][m]*k[m];
+                intermediate_y += h*mult(tableau.a[j][m],k[m]);
             }
             k.push_back(F(t+ h*tableau.c[j],  intermediate_y));
         }
 
-        y = tableau.e[tableau.b.size()-1]*y;
+        y = mult(tableau.e[tableau.b.size()-1],y);
         for(std::size_t j=0; j<tableau.b.size(); j++)
         {
-            y = y + h*tableau.b[j]*k[j];
+            y = y + h*mult(tableau.b[j],k[j]);
         }
         t += h;
 
@@ -104,6 +142,30 @@ const std::vector<double> &TimeIntegration<Y_TYPE>::getT()
     return T;
 }
 
+// TODO: Find a better way to achieve writing to file for scalar and vector problems
+template<typename Y_TYPE>
+void TimeIntegration<Y_TYPE>::file_stream(std::ofstream &file_o, d_vector &placeholder){
+    // Write the data for each time-step taken.
+    for(size_t i=0; i<Y.size(); i++) {
+        file_o << std::setprecision(std::numeric_limits<double>::max_digits10) << T[i] << "," ;
+        for(size_t j=0; j<Y[0].size(); j++)
+            file_o << std::setprecision(std::numeric_limits<double>::max_digits10) << Y[i](j) << "," ;
+
+        file_o << std::setprecision(std::numeric_limits<double>::max_digits10) << "\n" ;
+    }
+
+}
+
+// TODO: Find a better way to achieve writing to file for scalar and vector problems
+template<typename Y_TYPE>
+void TimeIntegration<Y_TYPE>::file_stream(std::ofstream &file_o, double placeholder){
+    // Write the data for each time-step taken.
+    for(size_t i=0; i<Y.size(); i++) {
+        file_o << std::setprecision(std::numeric_limits<double>::max_digits10) << T[i] << "," << Y[i] << "," << "\n";
+    }
+
+}
+
 template<typename Y_TYPE>
 void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name, int tau)
 {
@@ -123,10 +185,7 @@ void TimeIntegration<Y_TYPE>::save_simulation(std::string file_name, int tau)
         //file_o << "\n";
     }
 
-    // Write the data for each time-step taken.
-    for(size_t i=0; i<Y.size(); i++) {
-        file_o << std::setprecision(std::numeric_limits<double>::max_digits10) << T[i] << "," << Y[i] << "\n";
-    }
+    TimeIntegration::file_stream(file_o, Y[0]);
 
     file_o.close();
 }

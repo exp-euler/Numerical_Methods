@@ -16,6 +16,9 @@ class Vector
         Vector(int size);
         //~Vector();
         int size() const;
+        int rows() const;
+        int cols() const;
+        Vector<DATA_TYPE> cwiseProduct(Vector<DATA_TYPE>& otherVector);
         DATA_TYPE& front();
         DATA_TYPE& operator()(int i);
         Vector<DATA_TYPE>& operator=(const Vector<DATA_TYPE>& otherVector);
@@ -66,6 +69,30 @@ template<typename DATA_TYPE>
 int Vector<DATA_TYPE>::size() const
 {
     return mSize;
+}
+
+template<typename DATA_TYPE>
+int Vector<DATA_TYPE>::rows() const
+{
+    return mSize;
+}
+
+template<typename DATA_TYPE>
+int Vector<DATA_TYPE>::cols() const
+{
+    return 1;
+}
+
+template<typename DATA_TYPE>
+Vector<DATA_TYPE> Vector<DATA_TYPE>::cwiseProduct(Vector<DATA_TYPE> &otherVector)
+{
+    assert(mSize == otherVector.mSize);
+    Vector<DATA_TYPE> vec(mSize);
+    for(int i=0; i<mSize; i++)
+    {
+        vec.mData[i] = mData[i] * otherVector.mData[i];
+    }
+    return vec;
 }
 
 template<typename DATA_TYPE>
