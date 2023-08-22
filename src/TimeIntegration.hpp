@@ -45,7 +45,16 @@ private:
 
     void file_stream(std::ofstream &file_o, d_vector &placeholder);
     void file_stream(std::ofstream &file_o, double placeholder);
+
+    template<typename TABLEAU>
+    void private_Solve(TABLEAU tableau,
+               std::function<Y_TYPE(double, Y_TYPE)>F, double h,
+               Y_TYPE y0, double t0, double t1, int N);
 public:
+    //template<typename TABLEAU, typename WEIGHTS_TYPE>
+    //void Solve(TABLEAU tableau, WEIGHTS_TYPE L,
+               //std::function<Y_TYPE(double, Y_TYPE)>F, double h,
+               //Y_TYPE y0, double t0, double t1, int N, bool schur=false);
     template<typename TABLEAU>
     void Solve(TABLEAU tableau,
                std::function<Y_TYPE(double, Y_TYPE)>F, double h,
@@ -78,6 +87,24 @@ d_vector TimeIntegration<Y_TYPE>::mult(d_matrix &M, d_vector &V) {
     return M*V;
 }
 
+template<typename Y_TYPE>
+//template<typename TABLEAU, typename WEIGHTS_TYPE>
+//void TimeIntegration<Y_TYPE>::Solve(TABLEAU tableau, WEIGHTS_TYPE L,
+             //std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
+             //double t0, double t1, int N, bool schur)
+template<typename TABLEAU>
+void TimeIntegration<Y_TYPE>::Solve(TABLEAU tableau,
+             std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
+             double t0, double t1, int N)
+{
+    // Make named constructors be void in Tableaus. Have the allocation
+    // happen there with pointers.
+    // Pass tableau by lambda or function pointer and evaluate it based
+    // on whether schur is true or false.
+    //if(schur == true)
+    private_Solve(tableau, F, h, y0, t0, t1, N);
+}
+
 // Solver function that allows the user to specify:
 //      the method by              tableau
 //      the right hand side by     F
@@ -91,7 +118,7 @@ d_vector TimeIntegration<Y_TYPE>::mult(d_matrix &M, d_vector &V) {
 // specified in the README file.
 template<typename Y_TYPE>
 template<typename TABLEAU>
-void TimeIntegration<Y_TYPE>::Solve(TABLEAU tableau,
+void TimeIntegration<Y_TYPE>::private_Solve(TABLEAU tableau,
              std::function<Y_TYPE(double, Y_TYPE)>F, double h, Y_TYPE y0,
              double t0, double t1, int N)
 {

@@ -7,11 +7,14 @@
 
 #include <Eigen/Dense>
 typedef Eigen::MatrixXd matrix;
+typedef Eigen::VectorXd vector;
 
 #else
 
 #include "Matrix.hpp"
+#include "Vector.hpp"
 typedef Matrix<double> matrix;
+typedef Vector<double> vector;
 
 #endif
 
@@ -25,5 +28,6 @@ namespace LinearAlgebra {
 
     void phi_functions(std::vector<matrix> &phi, int l, matrix A);
 
+    void phi_functions(std::vector<vector> &phi, int l, vector A);
 }
 #endif //MATRIXFUNCTIONS

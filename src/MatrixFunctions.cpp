@@ -1,14 +1,19 @@
 #include "MatrixFunctions.hpp"
+#include "phi.h"
+#include <vector>
 
 #ifdef EIGEN_YES
 
 #include <Eigen/Dense>
 typedef Eigen::MatrixXd matrix;
+typedef Eigen::VectorXd vector;
 
 #else
 
 #include "Matrix.hpp"
+#include "Vector.hpp"
 typedef Matrix<double> matrix;
+typedef Vector<double> vector;
 
 #endif
 
@@ -53,6 +58,49 @@ namespace LinearAlgebra {
         int j = scale(A);
         j = 40; // Problem in accuracy is the scaling... Must be high enough?
         unscale(phi, A*(1.0/double(pow(2,j))), j, l);
+    }
+
+    void phi_functions(std::vector<vector> &phi, int l, vector A){
+        if(phi.size() == 1) {
+            for(int i=0; i<A.size(); i++){
+                phi[0](i) = exp(A(i));
+            }
+        }
+
+        if(phi.size() == 2) {
+            for(int i=0; i<A.size(); i++){
+                phi[0](i) = exp(A(i));
+                phi[1](i) = phi1(A(i));
+            }
+        }
+
+        if(phi.size() == 3) {
+            for(int i=0; i<A.size(); i++){
+                phi[0](i) = exp(A(i));
+                phi[1](i) = phi1(A(i));
+                phi[2](i) = phi2(A(i));
+            }
+        }
+
+        if(phi.size() == 4) {
+            for(int i=0; i<A.size(); i++){
+                phi[0](i) = exp(A(i));
+                phi[1](i) = phi1(A(i));
+                phi[2](i) = phi2(A(i));
+                phi[3](i) = phi3(A(i));
+            }
+        }
+
+        if(phi.size() == 5) {
+            for(int i=0; i<A.size(); i++){
+                phi[0](i) = exp(A(i));
+                phi[1](i) = phi1(A(i));
+                phi[2](i) = phi2(A(i));
+                phi[3](i) = phi3(A(i));
+                phi[4](i) = phi4(A(i));
+            }
+        }
+
     }
 
 }
