@@ -70,9 +70,12 @@ ExponentialRK<WEIGHTS_TYPE>::ExponentialRK( WEIGHTS_TYPE L,
 template<typename WEIGHTS_TYPE>
 ExponentialRK<WEIGHTS_TYPE> ExponentialRK<WEIGHTS_TYPE>::EEuler(WEIGHTS_TYPE L)
 {
-    int size_L = L.rows();
-    WEIGHTS_TYPE phi0(size_L,size_L);
-    WEIGHTS_TYPE phi1(size_L,size_L);
+    int rows_L = L.rows();
+    int cols_L = L.cols();
+    WEIGHTS_TYPE phi0(rows_L,cols_L);
+    WEIGHTS_TYPE phi1(rows_L,cols_L);
+    //WEIGHTS_TYPE phi0(size_L);
+    //WEIGHTS_TYPE phi1(size_L);
     std::vector<WEIGHTS_TYPE> phi = {phi0, phi1};
 
     LinearAlgebra::phi_functions(phi, 1, L);
@@ -83,17 +86,18 @@ ExponentialRK<WEIGHTS_TYPE> ExponentialRK<WEIGHTS_TYPE>::EEuler(WEIGHTS_TYPE L)
 template<typename WEIGHTS_TYPE>
 ExponentialRK<WEIGHTS_TYPE> ExponentialRK<WEIGHTS_TYPE>::ERK32ZB(WEIGHTS_TYPE L)
 {
-    int size_L = L.rows();
-    WEIGHTS_TYPE phi00(size_L,size_L);
-    WEIGHTS_TYPE phi10(size_L,size_L);
-    WEIGHTS_TYPE phi20(size_L,size_L);
-    WEIGHTS_TYPE phi01(size_L,size_L);
-    WEIGHTS_TYPE phi11(size_L,size_L);
-    WEIGHTS_TYPE phi21(size_L,size_L);
-    WEIGHTS_TYPE phi0(size_L,size_L);
-    WEIGHTS_TYPE phi1(size_L,size_L);
-    WEIGHTS_TYPE phi2(size_L,size_L);
-    WEIGHTS_TYPE phi3(size_L,size_L);
+    int rows_L = L.rows();
+    int cols_L = L.cols();
+    WEIGHTS_TYPE phi00(rows_L,cols_L);
+    WEIGHTS_TYPE phi10(rows_L,cols_L);
+    WEIGHTS_TYPE phi20(rows_L,cols_L);
+    WEIGHTS_TYPE phi01(rows_L,cols_L);
+    WEIGHTS_TYPE phi11(rows_L,cols_L);
+    WEIGHTS_TYPE phi21(rows_L,cols_L);
+    WEIGHTS_TYPE phi0(rows_L,cols_L);
+    WEIGHTS_TYPE phi1(rows_L,cols_L);
+    WEIGHTS_TYPE phi2(rows_L,cols_L);
+    WEIGHTS_TYPE phi3(rows_L,cols_L);
 
     std::vector<WEIGHTS_TYPE> phi = {phi0, phi1, phi2, phi3};
     std::vector<WEIGHTS_TYPE> phi_c0 = {phi00, phi10, phi20};

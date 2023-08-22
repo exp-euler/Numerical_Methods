@@ -13,7 +13,7 @@ class Vector
         int mSize;
     public:
         Vector(const Vector<DATA_TYPE>& otherVector);
-        Vector(int size);
+        Vector(int rows, int cols=1);
         //~Vector();
         int size() const;
         int rows() const;
@@ -57,12 +57,12 @@ Vector<DATA_TYPE>::Vector(const Vector<DATA_TYPE>& otherVector)
 
 // Constructor for Vector of a given size
 template<typename DATA_TYPE>
-Vector<DATA_TYPE>::Vector(int size)
+Vector<DATA_TYPE>::Vector(int rows, int cols)
 {
-    assert(size > 0);
-    mSize = size;
+    assert(rows > 0);
+    mSize = rows;
 
-    mData.resize(size);
+    mData.resize(rows);
 }
 
 template<typename DATA_TYPE>
