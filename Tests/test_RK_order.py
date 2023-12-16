@@ -36,8 +36,9 @@ def order_plot(directory, num_runs, steps, exact_sol, interval, order):
         step_size = interval/steps
         l2_error = np.linalg.norm(exact_sol-np.array(df.iloc[-1,:].values[1:-1]), np.inf) * step_size**(-order)
 
-        tau = np.append(tau, step_size)
-        errors = np.append(errors, l2_error)
+        if l2_error < 100 * step_size**(-order):
+            tau = np.append(tau, step_size)
+            errors = np.append(errors, l2_error)
 
         steps = steps*2
     plt.loglog(tau, errors, '-*')
@@ -47,6 +48,7 @@ def order_plot(directory, num_runs, steps, exact_sol, interval, order):
 #order_plot("./runs/Lambert1/", 15, 10, Lambert_exact(1), 1-0, 1)
 #order_plot("./runs/Lambert2/", 15, 10, Lambert_exact(1), 1-0, 4)
 #order_plot("./runs/Lambert2Exp/", 15, 10, Lambert_exact(1), 1-0, 1)
-order_plot("./runs/Problem_6_2_sin/", 9, 10, P62sin_exact(1,199), 1-0, 3)
+order_plot("./runs/Lambert2Diag/", 15, 10, Lambert_exact(1), 1-0, 1)
+#order_plot("./runs/Problem_6_2_sin/", 9, 10, P62sin_exact(1,199), 1-0, 1)
 #print(P62sin_exact(0,19))
 plt.show()

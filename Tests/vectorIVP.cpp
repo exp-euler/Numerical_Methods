@@ -1,3 +1,4 @@
+#include "Tableaus.hpp"
 #include "TimeIntegration.hpp"
 #include <cmath>
 #include <getopt.h>
@@ -35,6 +36,13 @@ d_vector RHS_Lambert2(double t, d_vector y) {
     d_vector rhs(y.size());
     rhs(0) = (-2)*y(0) + y(1) + 2*std::sin(t);
     rhs(1) = 998*y(0) + (-999)*y(1) + 999*(std::cos(t) - std::sin(t));
+    return rhs;
+}
+
+d_vector RHS_Lambert2_DiagL(double t, d_vector y) {
+    d_vector rhs(y.size());
+    rhs(0) = (-2)*y(0) + y(1) + 2*std::sin(t) + y(0);
+    rhs(1) = 998*y(0) + (-999)*y(1) + 999*(std::cos(t) - std::sin(t)) + 1000*y(1);
     return rhs;
 }
 
@@ -113,6 +121,7 @@ int main(int argc, char **argv) {
     Lambert.save_simulation("vector_output.csv", steps);
     */
 
+    /*
     d_matrix L(2,2);
     L(0,0)=-2; L(0,1)=1;
     L(1,0)=998; L(1,1)=-999;
@@ -121,5 +130,15 @@ int main(int argc, char **argv) {
     LambertExp.Solve(ExponentialRK<d_matrix>::EEuler(L*(h)), &RHS_Lambert2_nonL, h, y0Lam, t0, t1, steps);
 
     LambertExp.save_simulation("vector_output.csv", steps);
+    */
+
+    d_vector L(2);
+    L(0)=-1; L(1)=-1000;
+
+    TimeIntegration<d_vector> LambertDiag;
+    LambertDiag.Solve(ExponentialRK<d_vector>::EEuler(L*(h)), &RHS_Lambert2_DiagL, h, y0Lam, t0, t1, steps);
+
+    LambertDiag.save_simulation("vector_output.csv", steps);
+
     return 0;
 }
