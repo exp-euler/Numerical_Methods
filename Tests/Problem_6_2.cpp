@@ -135,6 +135,7 @@ int main(int argc, char **argv) {
     TimeIntegration<d_vector> P_62_sin;
     //P_62_sin.Solve(ExponentialRK<d_matrix>::EEuler(L*(-h)), &RHS_P62_sin, h, y0P, t0, t1, steps);
     P_62_sin.Solve(ExponentialRK<d_matrix>::ERK32ZB(L*(-h)), &RHS_P62_sin, h, y0P, t0, t1, steps);
+    //P_62_sin.Solve(ClassicalRK::Euler(), &RHS_P62_sin_wL, h, y0P, t0, t1, steps);
     //P_62_sin.Solve(ClassicalRK::RK4(), &RHS_P62_sin_wL, h, y0P, t0, t1, steps);
 
     P_62_sin.save_simulation("vector_output.csv", steps);

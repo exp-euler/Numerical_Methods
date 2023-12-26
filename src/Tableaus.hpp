@@ -111,7 +111,7 @@ ExponentialRK<WEIGHTS_TYPE> ExponentialRK<WEIGHTS_TYPE>::ERK32ZB(WEIGHTS_TYPE L)
         {0.5, 0.75},
         {phi_c0[0], phi_c1[0], phi[0]},
         {{phi_c0[1]*0.5}, {phi_c1[1]*0.75 - phi_c1[2]*(9.0/8.0) - phi_c0[2]*(3.0/8.0), phi_c1[2]*(9.0/8.0) + phi_c0[2]*(3.0/8.0)}},
-        {phi[1] - phi[2]*0.75 + phi[3]*0.25 - phi[2]*(5.0/6.0) - phi[3]*(1.0/6), phi[2]*0.75 - phi[3]*0.25, phi[2]*(5.0/6.0) + phi[3]*(1.0/6)});
+        {phi[1] - phi[2]*0.75 + phi[3]*0.25 - phi[2]*(5.0/6.0) - phi[3]*(1.0/6.0), phi[2]*0.75 - phi[3]*0.25, phi[2]*(5.0/6.0) + phi[3]*(1.0/6.0)});
 }
 
 

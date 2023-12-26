@@ -121,24 +121,26 @@ int main(int argc, char **argv) {
     Lambert.save_simulation("vector_output.csv", steps);
     */
 
-    /*
     d_matrix L(2,2);
     L(0,0)=-2; L(0,1)=1;
     L(1,0)=998; L(1,1)=-999;
 
     TimeIntegration<d_vector> LambertExp;
-    LambertExp.Solve(ExponentialRK<d_matrix>::EEuler(L*(h)), &RHS_Lambert2_nonL, h, y0Lam, t0, t1, steps);
+    //LambertExp.Solve(ExponentialRK<d_matrix>::EEuler(L*(h)), &RHS_Lambert2_nonL, h, y0Lam, t0, t1, steps);
+    LambertExp.Solve(ExponentialRK<d_matrix>::ERK32ZB(L*(h)), &RHS_Lambert2_nonL, h, y0Lam, t0, t1, steps);
 
     LambertExp.save_simulation("vector_output.csv", steps);
-    */
 
+    /*
     d_vector L(2);
     L(0)=-1; L(1)=-1000;
 
     TimeIntegration<d_vector> LambertDiag;
-    LambertDiag.Solve(ExponentialRK<d_vector>::EEuler(L*(h)), &RHS_Lambert2_DiagL, h, y0Lam, t0, t1, steps);
+    //LambertDiag.Solve(ExponentialRK<d_vector>::EEuler(L*(h)), &RHS_Lambert2_DiagL, h, y0Lam, t0, t1, steps);
+    LambertDiag.Solve(ExponentialRK<d_vector>::ERK32ZB(L*(h)), &RHS_Lambert2_DiagL, h, y0Lam, t0, t1, steps);
 
     LambertDiag.save_simulation("vector_output.csv", steps);
+    */
 
     return 0;
 }

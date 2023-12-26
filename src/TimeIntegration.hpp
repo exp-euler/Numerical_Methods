@@ -40,6 +40,7 @@ private:
 
     // TODO: Find a better way to do this!
     double mult(double &a, double &b);
+    d_vector mult(double &a, d_vector &V);
     d_vector mult(d_vector &D, d_vector &V);
     d_vector mult(d_matrix &M, d_vector &V);
 
@@ -75,6 +76,11 @@ public:
 template<typename Y_TYPE>
 double TimeIntegration<Y_TYPE>::mult(double &a, double &b) {
     return a*b;
+}
+
+template<typename Y_TYPE>
+d_vector TimeIntegration<Y_TYPE>::mult(double &a, d_vector &V) {
+    return a*V;
 }
 
 template<typename Y_TYPE>
