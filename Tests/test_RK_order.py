@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import sys
 
 def vector1_exact(t):
     sol0 = (-8.0/5.0)*np.exp(-t)*(-1) - (4.0/5.0)*np.exp(4*t)*2
@@ -23,9 +24,17 @@ def P62sin_exact(t, Psize):
     return sol
 
 
-def order_plot(directory, num_runs, steps, exact_sol, interval, order):
+def order_plot(directory, num_runs, steps, scaled_error, problem, t_start, t_end, order):
+    interval = t_end - t_start
+    if problem == "Lambert1":
+        exact_sol = Lambert_exact(t_end)
+    elif problem == "Lambert2":
+        exact_sol = Lambert_exact(t_end)
+    elif problem == "Problem_6_2_sin":
+        exact_sol = P62sin_exact(t_end,199)
     tau = np.array([])
     errors = np.array([])
+
     for i in range(1,num_runs):
         file_name = directory+"vector_output_" + str(int(steps)) + ".csv"
         df = pd.read_csv(file_name, header=None)
@@ -34,21 +43,17 @@ def order_plot(directory, num_runs, steps, exact_sol, interval, order):
         # power of the order of the method. Should see correct order if
         # graph levels off.
         step_size = interval/steps
-        l2_error = np.linalg.norm(exact_sol-np.array(df.iloc[-1,:].values[1:-1]), np.inf) * step_size**(-order)
+        error_scaling = step_size**(-order) if scaled_error else 1
 
-        if l2_error < 100 * step_size**(-order):
+        l2_error = np.linalg.norm(exact_sol-np.array(df.iloc[-1,:].values[1:-1]), np.inf) * error_scaling
+
+        if l2_error < 100 * error_scaling:
             tau = np.append(tau, step_size)
             errors = np.append(errors, l2_error)
 
         steps = steps*2
     plt.loglog(tau, errors, '-*')
 
-# Explicit Euler method
-#order_plot(10, vector1_exact(1), 1-0, 1)
-#order_plot("./runs/Lambert1/", 15, 10, Lambert_exact(1), 1-0, 1)
-#order_plot("./runs/Lambert2/", 15, 10, Lambert_exact(1), 1-0, 4)
-#order_plot("./runs/Lambert2Exp/", 15, 10, Lambert_exact(1), 1-0, 1)
-order_plot("./runs/Lambert2Diag/", 15, 10, Lambert_exact(1), 1-0, 1)
-#order_plot("./runs/Problem_6_2_sin/", 9, 10, P62sin_exact(1,199), 1-0, 1)
-#print(P62sin_exact(0,19))
+order_plot("./"+sys.argv[1]+"/", int(sys.argv[5]), int(sys.argv[4]), int(sys.argv[6]), sys.argv[2], 0, 1, int(sys.argv[3]))
+
 plt.show()
